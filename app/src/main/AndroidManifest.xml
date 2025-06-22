@@ -2,6 +2,7 @@
     package="com.example.securenotes">
 
     <application
+        android:name=".SecureNotesApplication"
         android:allowBackup="true"
         android:label="Secure Notes"
         android:supportsRtl="true"
