@@ -53,6 +53,8 @@ dependencies {
     kapt(libs.room.compiler)
     implementation(libs.room.ktx)
 
+    implementation(libs.crypto)
+
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
 
