@@ -1,4 +1,4 @@
-package com.example.securenotes.di
+package com.example.securenotes.core.di
 
 import EncryptedSp
 import IODispatcher
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.example.securenotes.utils.SPKeys
+import com.example.securenotes.core.utils.SPKeys
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
-
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -34,7 +33,7 @@ class AppModule {
 
     @EncryptedSp
     @Singleton
-    @Provides ()
+    @Provides()
     fun provideEncryptedSharedPreferences(context: Context): SharedPreferences {
         //more info: https://medium.com/@Naibeck/android-security-encryptedsharedpreferences-ea239e717e5f
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -50,7 +49,7 @@ class AppModule {
 
     @IODispatcher
     @Singleton
-    @Provides ()
+    @Provides()
     fun provideCoroutineIODispacher(): CoroutineDispatcher {
         return Dispatchers.IO
     }

@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
     kotlin("kapt")
 }
 
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.securenotes"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -54,6 +55,7 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.crypto)
+    implementation(libs.biometric)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)

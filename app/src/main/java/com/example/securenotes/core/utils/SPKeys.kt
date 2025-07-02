@@ -1,4 +1,4 @@
-package com.example.securenotes.utils
+package com.example.securenotes.core.utils
 
 object SPKeys {
     const val SHARED_PREFERENCES_NAME = "SharedPreferencesName"

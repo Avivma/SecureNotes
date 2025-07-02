@@ -5,6 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,5 +30,14 @@ class MainActivity : AppCompatActivity() {
             binding.root.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        L.setup()
+
+        L.i("SecureNotesMainActivity - onCreate")
+    }
+
+    //    fun getNavController(): NavController = this.findNavController(R.id.nav_host_fragment)
+    fun getNavController(): NavController {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
     }
 }

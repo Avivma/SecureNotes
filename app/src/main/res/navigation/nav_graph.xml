@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/biometricFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.securenotes.features.main.ui.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main">
+    </fragment>
+
+    <fragment
+        android:id="@+id/biometricFragment"
+        android:name="com.example.securenotes.features.biometric.ui.BiometricFragment"
+        android:label="Biometric"
+        tools:layout="@layout/fragment_biometric">
+        <action
+            android:id="@+id/action_biometricFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/biometricFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+</navigation>
