@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.securenotes.databinding.FragmentMainBinding
-import com.example.securenotes.features.main.ui.state.MainIntent
 import com.example.securenotes.features.main.ui.state.MainState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -38,18 +37,16 @@ class MainFragment : Fragment() {
                 }
             }
         }
-/*        lifecycleScope.launchWhenStarted {
-            viewModel.state.collectLatest { state ->
-                if (state.isLoading) {
-                    binding.progressBar.visibility = View.VISIBLE
-                } else {
-                    binding.progressBar.visibility = View.GONE
-                    binding.recyclerView.adapter = MainAdapter(state.notes)
-                }
-            }
-        }*/
+    }
 
-        viewModel.action(MainIntent.LoadNotes)
+    override fun onStart() {
+        super.onStart()
+        viewModel.startObservingDb()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.stopObservingDb()
     }
 
     private fun render(state: MainState) {
