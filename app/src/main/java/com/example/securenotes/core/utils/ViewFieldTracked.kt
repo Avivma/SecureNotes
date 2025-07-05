@@ -1,0 +1,32 @@
+package com.example.securenotes.core.utils
+
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+
+class ViewFieldTracked<T>(initialValue: T) {
+
+    val current: MutableLiveData<T> = MutableLiveData(initialValue)
+    private var originValue: T = initialValue
+
+    val hasChanged: MediatorLiveData<Boolean> = MediatorLiveData()
+
+    init {
+        hasChanged.addSource(current) { checkChange() }
+        hasChanged.value = false
+    }
+
+    private fun checkChange() {
+        hasChanged.value = current.value != originValue
+    }
+
+    fun set(newOrigin: T) {
+        originValue = newOrigin
+        current.value = newOrigin
+        hasChanged.value = false
+    }
+
+    fun reset() {
+        set(originValue)
+    }
+//    fun getCurrent(): T = current.value ?: originValue
+}

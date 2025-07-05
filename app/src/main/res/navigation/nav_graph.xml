@@ -10,7 +10,16 @@
         android:name="com.example.securenotes.features.main.ui.MainFragment"
         android:label="Main"
         tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_addNoteFragment"
+            app:destination="@id/addNoteFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addNoteFragment"
+        android:name="com.example.securenotes.features.addnote.ui.AddNoteFragment"
+        android:label="Add Note"
+        tools:layout="@layout/fragment_add_note" />
 
     <fragment
         android:id="@+id/biometricFragment"

@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.securenotes.R
 import com.example.securenotes.databinding.FragmentMainBinding
 import com.example.securenotes.features.main.ui.state.MainState
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +31,10 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.fab.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_addNoteFragment)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

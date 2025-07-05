@@ -1,4 +1,4 @@
-package com.example.securenotes.features.main.data.db
+package com.example.securenotes.shared.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,8 +12,8 @@ interface NoteDao {
     @Query("SELECT * FROM notes")
     fun getNotes(): Flow<List<NoteEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(note: NoteEntity)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    suspend fun insertNote(note: NoteEntity): Long
 
     @Query("DELETE FROM notes WHERE id = :noteId")
     suspend fun deleteNote(noteId: Int)

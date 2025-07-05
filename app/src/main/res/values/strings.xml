@@ -1,3 +1,4 @@
 <resources>
     <string name="waiting_for_fingerprint">Waiting for fingerprint...</string>
+    <string name="save">Save</string>
 </resources>

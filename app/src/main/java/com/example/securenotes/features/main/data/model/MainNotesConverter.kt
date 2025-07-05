@@ -1,9 +1,9 @@
 package com.example.securenotes.features.main.data.model
 
-import com.example.securenotes.features.main.data.db.NoteEntity
 import com.example.securenotes.features.main.domain.model.Note
+import com.example.securenotes.shared.data.db.NoteEntity
 
-object DBNoteConverter {
+object MainNotesConverter {
     fun domainToDb(note: Note): NoteEntity {
         return NoteEntity(
             id = note.id,

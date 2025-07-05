@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.securenotes.features.main.domain.usecase.GetNotesUseCase
 import com.example.securenotes.features.main.domain.usecase.ObserveNotesUseCase
 import com.example.securenotes.features.main.ui.model.UiNoteConverter
-import com.example.securenotes.features.main.ui.state.MainIntent
+import com.example.securenotes.features.main.ui.state.MainIntention
 import com.example.securenotes.features.main.ui.state.MainState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,10 +29,10 @@ class MainViewModel @Inject constructor(
     val state: StateFlow<MainState> = _state
     private var dbJob: Job? = null
 
-    fun action(intent: MainIntent) {
+    fun action(intention: MainIntention) {
         viewModelScope.launch(ioDispatcher) {
-            when (intent) {
-                is MainIntent.LoadNotes -> loadNotes()
+            when (intention) {
+                is MainIntention.LoadNotes -> loadNotes()
             }
         }
     }

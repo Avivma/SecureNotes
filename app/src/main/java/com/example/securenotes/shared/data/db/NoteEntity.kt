@@ -1,4 +1,4 @@
-package com.example.securenotes.features.main.data.db
+package com.example.securenotes.shared.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,9 @@ data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
-    val content: String
+    val content: String,
+    val lastModified: Long = System.currentTimeMillis(),
+
+    // SHOULD NOT BE MODIFIED
+    val createdAt: Long = System.currentTimeMillis()
 )

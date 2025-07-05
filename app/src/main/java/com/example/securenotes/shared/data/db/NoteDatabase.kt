@@ -1,4 +1,4 @@
-package com.example.securenotes.features.main.data.db
+package com.example.securenotes.shared.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
