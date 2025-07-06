@@ -3,11 +3,14 @@ package com.example.securenotes.features.main.ui
 import IODispatcher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.securenotes.core.utils.L
 import com.example.securenotes.features.main.domain.usecase.GetNotesUseCase
 import com.example.securenotes.features.main.domain.usecase.ObserveNotesUseCase
+import com.example.securenotes.features.main.ui.model.UiNote
 import com.example.securenotes.features.main.ui.model.UiNoteConverter
 import com.example.securenotes.features.main.ui.state.MainIntention
 import com.example.securenotes.features.main.ui.state.MainState
+import com.example.securenotes.shared.removenote.domain.usecase.RemoveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -22,7 +25,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val observeNotesUseCase: ObserveNotesUseCase,
-    private val getNotesUseCase: GetNotesUseCase
+    private val getNotesUseCase: GetNotesUseCase,
+    private val removeNoteUseCase: RemoveNoteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<MainState>(MainState.Waiting)
@@ -33,6 +37,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             when (intention) {
                 is MainIntention.LoadNotes -> loadNotes()
+                is MainIntention.RemoveNote -> removeNote(intention.note, intention.displayDialog)
+                is MainIntention.GoToAddNoteScreen -> goToAddNoteScreen()
             }
         }
     }
@@ -61,4 +67,25 @@ class MainViewModel @Inject constructor(
             _state.value = MainState.DisplayNotes(notes)
         }
     }
+
+    private suspend fun removeNote(note: UiNote, displayDialog: Boolean) {
+        if (displayDialog) {
+            _state.value = MainState.DisplayRemoveQuestion(note)
+            return
+        }
+
+        val noteRemoved = removeNoteUseCase(note.id)
+        if (!noteRemoved) {
+            _state.value = MainState.Error("Failed to remove note")
+            L.e("Failed to remove note with id: ${note.id}")
+            return
+        }
+        _state.value = MainState.NoteRemoved(note.title)
+    }
+
+    private fun goToAddNoteScreen() {
+        _state.value = MainState.Navigation.NavigateToAddNote
+    }
+
+
 }

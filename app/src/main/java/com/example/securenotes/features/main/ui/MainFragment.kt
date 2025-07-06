@@ -9,20 +9,30 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.securenotes.R
+import com.example.securenotes.MainActivity
+import com.example.securenotes.core.utils.L
+import com.example.securenotes.core.utils.requireActivityTyped
 import com.example.securenotes.databinding.FragmentMainBinding
+import com.example.securenotes.features.main.ui.model.UiNote
+import com.example.securenotes.features.main.ui.state.MainIntention
 import com.example.securenotes.features.main.ui.state.MainState
+import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var adapter: MainAdapter
+
+    @Inject
+    lateinit var displayRemove: RemoveNoteDisplay
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -30,15 +40,31 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        setAdapter(emptyList())
+        setListeners()
+    }
 
+    private fun setAdapter(notes: List<UiNote>) {
+        adapter = MainAdapter(notes)
+        adapter.setHasStableIds(true)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun setListeners() {
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addNoteFragment)
+            viewModel.action(MainIntention.GoToAddNoteScreen)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.noteClicked.collectLatest { intention ->
+                    if (intention != null)
+                        viewModel.action(intention)
+                }
+
                 viewModel.state.collectLatest { state ->
+                    if (state is MainState.Navigation) navigate(state)
                     render(state)
                 }
             }
@@ -57,9 +83,15 @@ class MainFragment : Fragment() {
 
     private fun render(state: MainState) {
         when (state) {
-            is MainState.Waiting -> handleWaitingState()
+            MainState.Waiting -> handleWaitingState()
             is MainState.DisplayNotes -> handleDisplayNotesState(state)
-            is MainState.Error -> handleErrorState()
+            is MainState.DisplayRemoveQuestion -> showDeleteDialog(state.note)
+            is MainState.NoteRemoved -> handleRemovedNoteState(state.title)
+            is MainState.Error -> handleErrorState(state.message)
+            else -> {
+                L.e("Unhandled state: $state")
+                throw IllegalStateException("Unhandled state: $state")
+            }
         }
     }
 
@@ -69,11 +101,29 @@ class MainFragment : Fragment() {
 
     private fun handleDisplayNotesState(state: MainState.DisplayNotes) {
         binding.displayNotes = true
-        binding.recyclerView.adapter = MainAdapter(state.notes)
+        adapter.setNotes(state.notes)
     }
 
-    private fun handleErrorState() {
-        TODO("Not yet implemented")
+    private fun showDeleteDialog(note: UiNote) {
+        displayRemove.showDeleteDialog { viewModel.action(MainIntention.RemoveNote(note)) }
+    }
+
+
+    private fun handleRemovedNoteState(noteTitle: String) {
+        displayRemove.showNoteRemovedMessage(noteTitle)
+    }
+
+    private fun handleErrorState(message: String) {
+        Snackbar.make(requireView(), "An error occurred: ${message}", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun navigate(navigation: MainState.Navigation) {
+        if (navigation is MainState.Navigation.NavigateToAddNote) {
+            val direction = MainFragmentDirections.actionMainFragmentToAddNoteFragment()
+            requireActivityTyped<MainActivity>().getNavController().navigate(direction)
+        }
+        else
+            L.e("Unhandled navigation state: $navigation")
     }
 
     override fun onDestroyView() {

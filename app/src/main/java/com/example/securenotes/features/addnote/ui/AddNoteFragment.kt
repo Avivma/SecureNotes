@@ -4,27 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.securenotes.core.ui.DisplayToast
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.FragmentAddNoteBinding
 import com.example.securenotes.features.addnote.ui.state.AddNoteIntention
 import com.example.securenotes.features.addnote.ui.state.AddNoteState
+import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddNoteFragment : Fragment() {
     private var _binding: FragmentAddNoteBinding? = null
     private val binding get() = _binding!!
     private val viewModel: AddNoteViewModel by viewModels()
+
+    @Inject
+    lateinit var displayRemove: RemoveNoteDisplay
+
+    @Inject
+    lateinit var displayToast: DisplayToast
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddNoteBinding.inflate(inflater, container, false)
@@ -64,13 +72,15 @@ class AddNoteFragment : Fragment() {
     private fun render(state: AddNoteState) {
         when (state) {
             AddNoteState.Idle -> Unit
-            AddNoteState.NoteSaved -> displaySavedMessage()
-            is AddNoteState.Error -> {
-                Snackbar.make(requireView(), "An error while saving has occurred", Snackbar.LENGTH_SHORT).show()
-            }
+            AddNoteState.NoteSaved -> displayToast("Note saved successfully")
+            is AddNoteState.DisplayRemoveQuestion -> displayRemove.showDeleteDialog { viewModel.action(
+                AddNoteIntention.RemoveNote(state.note)) }
+            is AddNoteState.Error -> Snackbar.make(requireView(), "An error while saving has occurred", Snackbar.LENGTH_SHORT).show()
+            is AddNoteState.NoteRemoved -> displayRemove.showNoteRemovedMessage(state.title)
 
             else -> {
                 L.e("Unhandled state: $state")
+                throw IllegalStateException("Unhandled state: $state")
             }
         }
     }
@@ -81,10 +91,6 @@ class AddNoteFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         else
             L.e("Unhandled navigation state: $navigation")
-    }
-
-    private fun displaySavedMessage() {
-        Toast.makeText(requireContext(), "Note saved successfully", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

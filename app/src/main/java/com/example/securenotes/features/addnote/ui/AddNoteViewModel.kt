@@ -5,12 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.securenotes.core.utils.Consts
+import com.example.securenotes.core.utils.L
 import com.example.securenotes.core.utils.ViewFieldTracked
 import com.example.securenotes.features.addnote.domain.model.AddNoteModel
 import com.example.securenotes.features.addnote.domain.usecase.AddNoteUseCase
 import com.example.securenotes.features.addnote.ui.state.AddNoteIntention
 import com.example.securenotes.features.addnote.ui.state.AddNoteState
 import com.example.securenotes.features.addnote.ui.utils.TrackCombineFields
+import com.example.securenotes.shared.removenote.domain.usecase.RemoveNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddNoteViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val addNoteUseCase: AddNoteUseCase
+    private val addNoteUseCase: AddNoteUseCase,
+    private val removeNoteUseCase: RemoveNoteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<AddNoteState>(AddNoteState.Idle)
@@ -48,6 +51,7 @@ class AddNoteViewModel @Inject constructor(
             when (intention) {
                 is AddNoteIntention.SaveNote -> saveNote()
                 is AddNoteIntention.BackPressed -> backPressed()
+                is AddNoteIntention.RemoveNote -> removeNote(intention.note)
             }
         }
     }
@@ -68,6 +72,17 @@ class AddNoteViewModel @Inject constructor(
 
     private suspend fun backPressed() {
         if (hasChangedOccurred()) saveNote()
+        _state.value = AddNoteState.Navigation.NavigateBack
+    }
+
+    private suspend fun removeNote(note: AddNoteModel) {
+        val noteRemoved = removeNoteUseCase(note.id)
+        if (!noteRemoved) {
+            _state.value = AddNoteState.Error("Failed to remove note")
+            L.e("Failed to remove note with id: ${note.id}")
+            return
+        }
+        _state.value = AddNoteState.NoteRemoved(note.title)
         _state.value = AddNoteState.Navigation.NavigateBack
     }
 
