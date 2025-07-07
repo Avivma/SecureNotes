@@ -38,7 +38,8 @@ class MainViewModel @Inject constructor(
             when (intention) {
                 is MainIntention.LoadNotes -> loadNotes()
                 is MainIntention.RemoveNote -> removeNote(intention.note, intention.displayDialog)
-                is MainIntention.GoToAddNoteScreen -> goToAddNoteScreen()
+                is MainIntention.AddNote -> goToAddNoteScreen()
+                is MainIntention.EditNote -> goToEditNoteScreen(intention.note)
             }
         }
     }
@@ -84,8 +85,10 @@ class MainViewModel @Inject constructor(
     }
 
     private fun goToAddNoteScreen() {
-        _state.value = MainState.Navigation.NavigateToAddNote
+        _state.value = MainState.Navigation.NavigateToModifyNote()
     }
 
-
+    private fun goToEditNoteScreen(note: UiNote) {
+        _state.value = MainState.Navigation.NavigateToModifyNote(note)
+    }
 }

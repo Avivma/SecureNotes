@@ -1,10 +1,10 @@
 package com.example.securenotes.features.main.ui.model
 
-import com.example.securenotes.features.main.domain.model.Note
+import com.example.securenotes.features.main.domain.model.MainNote
 
 object UiNoteConverter {
 
-    fun fromDomain(note: Note): UiNote {
+    fun fromDomain(note: MainNote): UiNote {
         return UiNote(
             id = note.id,
             title = note.title,
@@ -12,8 +12,8 @@ object UiNoteConverter {
         )
     }
 
-    fun toDomain(uiNote: UiNote): Note {
-        return Note(
+    fun toDomain(uiNote: UiNote): MainNote {
+        return MainNote(
             id = uiNote.id,
             title = uiNote.title,
             content = uiNote.content

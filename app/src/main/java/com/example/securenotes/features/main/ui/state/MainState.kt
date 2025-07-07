@@ -11,6 +11,6 @@ sealed class MainState() {
     data class Error(val message: String): MainState()
 
     sealed class Navigation: MainState() {
-        object NavigateToAddNote: MainState.Navigation()
+        data class NavigateToModifyNote(val note: UiNote? = null): MainState.Navigation()
     }
 }

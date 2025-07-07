@@ -11,15 +11,20 @@
         android:label="Main"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_mainFragment_to_addNoteFragment"
-            app:destination="@id/addNoteFragment" />
+            android:id="@+id/action_mainFragment_to_modifyNoteFragment"
+            app:destination="@id/modifyNoteFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/addNoteFragment"
-        android:name="com.example.securenotes.features.addnote.ui.AddNoteFragment"
+        android:id="@+id/modifyNoteFragment"
+        android:name="com.example.securenotes.features.modifynote.ui.ModifyNoteFragment"
         android:label="Add Note"
-        tools:layout="@layout/fragment_add_note" />
+        tools:layout="@layout/fragment_modify_note" >
+        <argument
+            android:name="noteId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 
     <fragment
         android:id="@+id/biometricFragment"

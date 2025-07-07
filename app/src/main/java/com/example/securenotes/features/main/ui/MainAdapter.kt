@@ -40,6 +40,9 @@ class MainAdapter(updatedNotes: List<UiNote>) : RecyclerView.Adapter<MainAdapter
         fun bind(note: UiNote) {
             val noteView = NoteView(note.title, note.content)
             binding.noteView = noteView
+            binding.rowLayout.setOnClickListener {
+                _noteClicked.value = MainIntention.EditNote(note)
+            }
             binding.buttonDelete.setOnClickListener {
                 _noteClicked.value = MainIntention.RemoveNote(note, displayDialog = true)
             }

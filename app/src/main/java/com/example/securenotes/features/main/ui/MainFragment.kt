@@ -12,12 +12,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.securenotes.MainActivity
 import com.example.securenotes.core.utils.L
-import com.example.securenotes.core.utils.requireActivityTyped
 import com.example.securenotes.databinding.FragmentMainBinding
 import com.example.securenotes.features.main.ui.model.UiNote
 import com.example.securenotes.features.main.ui.state.MainIntention
 import com.example.securenotes.features.main.ui.state.MainState
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
+import com.example.securenotes.shared.utils.requireActivityTyped
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -34,7 +34,11 @@ class MainFragment : Fragment() {
     @Inject
     lateinit var displayRemove: RemoveNoteDisplay
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,7 +57,7 @@ class MainFragment : Fragment() {
 
     private fun setListeners() {
         binding.fab.setOnClickListener {
-            viewModel.action(MainIntention.GoToAddNoteScreen)
+            viewModel.action(MainIntention.AddNote)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -118,11 +122,12 @@ class MainFragment : Fragment() {
     }
 
     private fun navigate(navigation: MainState.Navigation) {
-        if (navigation is MainState.Navigation.NavigateToAddNote) {
-            val direction = MainFragmentDirections.actionMainFragmentToAddNoteFragment()
+        if (navigation is MainState.Navigation.NavigateToModifyNote) {
+            val direction =
+                if (navigation.note == null) MainFragmentDirections.actionMainFragmentToModifyNoteFragment()
+                else MainFragmentDirections.actionMainFragmentToModifyNoteFragment(navigation.note.id)
             requireActivityTyped<MainActivity>().getNavController().navigate(direction)
-        }
-        else
+        } else
             L.e("Unhandled navigation state: $navigation")
     }
 

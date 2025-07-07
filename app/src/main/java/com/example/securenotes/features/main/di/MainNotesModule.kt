@@ -1,7 +1,7 @@
 package com.example.securenotes.features.main.di
 
+import com.example.securenotes.features.main.data.MainNotesRepositoryImp
 import com.example.securenotes.features.main.domain.repository.MainNoteRepository
-import com.example.securenotes.shared.data.NoteRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 abstract class MainNotesModule {
     @Singleton
     @Binds
-    abstract fun bindNoteRepository(noteRepositoryImp: NoteRepositoryImp): MainNoteRepository
+    abstract fun bindNoteRepository(noteRepositoryImp: MainNotesRepositoryImp): MainNoteRepository
 }

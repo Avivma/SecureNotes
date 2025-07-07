@@ -1,0 +1,56 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="data"
+            type="com.example.securenotes.features.modifynote.ui.ModifyNoteViewModel.ViewData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="locale"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:text="@={data.title.current}"
+            android:inputType="textCapSentences"
+            android:textDirection="locale"
+            android:gravity="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="הכותרת שלי"/>
+
+        <EditText
+            android:id="@+id/etContent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:hint="Content"
+            android:text="@={data.content.current}"
+            android:gravity="top|end"
+            android:textDirection="locale"
+            android:inputType="textMultiLine"
+            app:layout_constraintTop_toBottomOf="@id/etTitle"
+            app:layout_constraintBottom_toTopOf="@id/btnSave"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="תוכן ההערה שלי"
+            />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:enabled="@{data.isSaveEnabled}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

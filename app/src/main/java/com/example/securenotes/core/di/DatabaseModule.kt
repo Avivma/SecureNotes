@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.securenotes.core.utils.SPKeys
+import com.example.securenotes.shared.utils.SPKeys
 import com.example.securenotes.shared.data.db.NoteDao
 import com.example.securenotes.shared.data.db.NoteDatabase
 import com.example.securenotes.shared.data.db.NoteEntity

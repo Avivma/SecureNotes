@@ -1,7 +1,7 @@
 package com.example.securenotes.shared.removenote.ui
 
 import android.content.Context
-import com.example.securenotes.core.ui.DisplayToast
+import com.example.securenotes.shared.ui.DisplayToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -2,7 +2,7 @@ package com.example.securenotes.shared.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.securenotes.core.utils.SPKeys
+import com.example.securenotes.shared.utils.SPKeys
 
 @Entity(tableName = SPKeys.NOTE_TABLE_NAME)
 data class NoteEntity(

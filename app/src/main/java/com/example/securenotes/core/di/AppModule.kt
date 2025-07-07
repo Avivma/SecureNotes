@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.example.securenotes.core.utils.SPKeys
+import com.example.securenotes.shared.utils.SPKeys
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
