@@ -62,14 +62,17 @@ class MainFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                adapter.noteClicked.collectLatest { intention ->
-                    if (intention != null)
-                        viewModel.action(intention)
+                launch {
+                    viewModel.state.collectLatest { state ->
+                        if (state is MainState.Navigation) navigate(state)
+                        else render(state)
+                    }
                 }
-
-                viewModel.state.collectLatest { state ->
-                    if (state is MainState.Navigation) navigate(state)
-                    render(state)
+                launch {
+                    adapter.noteClicked.collectLatest { intention ->
+                        if (intention != null)
+                            viewModel.action(intention)
+                    }
                 }
             }
         }
@@ -104,12 +107,15 @@ class MainFragment : Fragment() {
     }
 
     private fun handleDisplayNotesState(state: MainState.DisplayNotes) {
+        L.i("$TAG - handleDisplayNotesState - notes: ${state.notes}")
         binding.displayNotes = true
         adapter.setNotes(state.notes)
     }
 
     private fun showDeleteDialog(note: UiNote) {
-        displayRemove.showDeleteDialog { viewModel.action(MainIntention.RemoveNote(note)) }
+        displayRemove.showDeleteDialog(requireContext()) {
+            viewModel.action(MainIntention.RemoveNote(note))
+        }
     }
 
 
@@ -134,5 +140,9 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "MainFragment"
     }
 }

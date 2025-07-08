@@ -1,9 +1,10 @@
 package com.example.securenotes.features.modifynote.ui
 
-import IODispatcher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.securenotes.core.di.IODispatcher
+import com.example.securenotes.core.di.MainDispatcher
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.features.modifynote.domain.model.ModifyNoteModel
 import com.example.securenotes.features.modifynote.domain.usecase.GetNoteUseCase
@@ -19,11 +20,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ModifyNoteViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val saveNoteUseCase: SaveNoteUseCase,
     private val removeNoteUseCase: RemoveNoteUseCase,
     private val getNoteUseCase: GetNoteUseCase
@@ -79,6 +82,7 @@ class ModifyNoteViewModel @Inject constructor(
             val resultedNoteId = saveNoteUseCase(note)
             if (resultedNoteId != Consts.NO_ID) {
                 currentNoteId = resultedNoteId
+                resetSave()
                 _state.value = ModifyNoteState.NoteSaved
             } else {
                 L.i("Error saving note. Latest noteId = ${currentNoteId}")
@@ -114,15 +118,24 @@ class ModifyNoteViewModel @Inject constructor(
         content = data.content.current.value.orEmpty(),
     )
 
+    private suspend fun resetSave() {
+        withContext(mainDispatcher) {
+            data.title.updateOrigin()
+            data.content.updateOrigin()
+        }
+    }
+
     object ViewData {
         val title = ViewFieldTracked("")
         val content = ViewFieldTracked("")
         val isSaveEnabled: LiveData<Boolean> = TrackCombineFields(title, content).hasChangedOccurred
     }
 
-    private fun setViewData(title: String, content: String) {
-        data.title.set(title)
-        data.content.set(content)
+    private suspend fun setViewData(title: String, content: String) {
+        withContext(mainDispatcher) {
+            data.title.set(title)
+            data.content.set(content)
+        }
     }
 }
 

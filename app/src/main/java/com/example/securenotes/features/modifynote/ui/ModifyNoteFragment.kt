@@ -76,7 +76,7 @@ class ModifyNoteFragment : Fragment() {
         when (state) {
             ModifyNoteState.Idle -> Unit
             ModifyNoteState.NoteSaved -> displayToast("Note saved successfully")
-            is ModifyNoteState.DisplayRemoveQuestion -> displayRemove.showDeleteDialog { viewModel.action(
+            is ModifyNoteState.DisplayRemoveQuestion -> displayRemove.showDeleteDialog(requireContext()) { viewModel.action(
                 ModifyNoteIntention.RemoveNote(state.note)) }
             is ModifyNoteState.Error -> Snackbar.make(requireView(), "An error while saving has occurred", Snackbar.LENGTH_SHORT).show()
             is ModifyNoteState.NoteRemoved -> displayRemove.showNoteRemovedMessage(state.title)

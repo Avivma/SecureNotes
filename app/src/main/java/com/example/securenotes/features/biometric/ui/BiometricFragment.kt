@@ -14,12 +14,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.securenotes.MainActivity
-import com.example.securenotes.shared.ui.DisplayToast
 import com.example.securenotes.core.utils.L
-import com.example.securenotes.shared.utils.requireActivityTyped
 import com.example.securenotes.databinding.FragmentBiometricBinding
 import com.example.securenotes.features.biometric.ui.state.BiometricIntention
 import com.example.securenotes.features.biometric.ui.state.BiometricState
+import com.example.securenotes.shared.ui.DisplayToast
+import com.example.securenotes.shared.utils.requireActivityTyped
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
@@ -53,7 +53,7 @@ class BiometricFragment : Fragment() {
 
         viewModel.authenticationResultLiveData.observe(viewLifecycleOwner) {
             if (it is BiometricState.Navigation) navigate(it)
-            render(it)
+            else render(it)
         }
     }
 

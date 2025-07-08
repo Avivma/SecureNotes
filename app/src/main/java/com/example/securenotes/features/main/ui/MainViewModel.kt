@@ -1,8 +1,8 @@
 package com.example.securenotes.features.main.ui
 
-import IODispatcher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.securenotes.core.di.IODispatcher
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.features.main.domain.usecase.GetNotesUseCase
 import com.example.securenotes.features.main.domain.usecase.ObserveNotesUseCase
@@ -50,6 +50,7 @@ class MainViewModel @Inject constructor(
             observeNotesUseCase()
                 .map { it.map(UiNoteConverter::fromDomain) }
                 .collect { notes ->
+                    L.i("$TAG - startObservingDb - collect notes: $notes")
                     _state.value = MainState.DisplayNotes(notes)
                 }
         }
@@ -91,4 +92,7 @@ class MainViewModel @Inject constructor(
     private fun goToEditNoteScreen(note: UiNote) {
         _state.value = MainState.Navigation.NavigateToModifyNote(note)
     }
+
+    companion object {
+        private const val TAG = "MainViewModel"}
 }

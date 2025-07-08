@@ -1,7 +1,5 @@
 package com.example.securenotes.core.di
 
-import EncryptedSp
-import IODispatcher
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
@@ -50,9 +48,17 @@ class AppModule {
     @IODispatcher
     @Singleton
     @Provides()
-    fun provideCoroutineIODispacher(): CoroutineDispatcher {
+    fun provideCoroutineIODispatcher(): CoroutineDispatcher {
         return Dispatchers.IO
     }
+
+    @MainDispatcher
+    @Singleton
+    @Provides()
+    fun provideCoroutineMainDispatcher(): CoroutineDispatcher {
+        return Dispatchers.Main
+    }
+
 
 //    @Singleton
 //    @Provides

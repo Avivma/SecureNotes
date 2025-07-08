@@ -41,7 +41,9 @@ class BiometricViewModel @Inject constructor(
 
         val (activity, executor, promptInfo) = authenticationParams
         val authenticateSucceeded = hasAuthenticate(activity, executor, promptInfo)
-        _authenticationResultLiveData.value = if (authenticateSucceeded) BiometricState.Navigation.NavigateToMainScreen else BiometricState.DisplayFailedMessage
+        _authenticationResultLiveData.value =
+            if (authenticateSucceeded) BiometricState.Navigation.NavigateToMainScreen
+            else BiometricState.DisplayFailedMessage
     }
 
     private suspend fun hasAuthenticate(

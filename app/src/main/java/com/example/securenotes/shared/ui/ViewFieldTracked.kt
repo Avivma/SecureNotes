@@ -1,8 +1,10 @@
 package com.example.securenotes.shared.ui
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 
+@MainThread
 class ViewFieldTracked<T>(initialValue: T) {
 
     val current: MutableLiveData<T> = MutableLiveData(initialValue)
@@ -25,8 +27,9 @@ class ViewFieldTracked<T>(initialValue: T) {
         hasChanged.value = false
     }
 
-    fun reset() {
-        set(originValue)
+    fun updateOrigin() {
+        originValue = current.value!!
+        hasChanged.value = false
     }
 //    fun getCurrent(): T = current.value ?: originValue
 }
