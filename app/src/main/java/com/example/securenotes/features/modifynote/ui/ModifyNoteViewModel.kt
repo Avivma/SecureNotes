@@ -105,7 +105,6 @@ class ModifyNoteViewModel @Inject constructor(
     private suspend fun removeNote(noteId: Int, displayDialog: Boolean) {
         if (!isNoteIdValid(noteId)) {
             justBeenDeleted = true
-            _state.emit(ModifyNoteState.NoteRemoved(""))
             _state.emit(ModifyNoteState.Navigation.NavigateBack)
             return
         }
