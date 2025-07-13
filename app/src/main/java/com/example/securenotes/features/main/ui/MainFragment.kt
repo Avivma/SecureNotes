@@ -30,8 +30,8 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
 
-    private var _adapter: MainAdapter? = null
-    private val adapter get() = _adapter!!
+    private var mainAdapterManager = MainAdapterManager()
+    private val adapter get() = mainAdapterManager.getAdapter()
 
     @MainDispatcher
     @Inject
@@ -57,13 +57,11 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter(notes: List<UiNote>) {
-        val callback: (MainIntention) -> Unit = { intention: MainIntention ->
+        mainAdapterManager.set(notes, binding.recyclerView) { intention: MainIntention ->
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.action(intention)
             }
         }
-        _adapter = MainAdapter(notes, callback)
-        adapter.setHasStableIds(true)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
@@ -150,7 +148,7 @@ class MainFragment : Fragment() {
     }
 
     private fun resetAdapter() {
-        _adapter = null
+        mainAdapterManager.reset()
         binding.recyclerView.adapter = null
     }
 

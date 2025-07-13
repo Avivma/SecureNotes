@@ -1,14 +1,21 @@
 package com.example.securenotes.features.main.ui
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.NoteLayoutBinding
 import com.example.securenotes.features.main.ui.model.UiNote
 import com.example.securenotes.features.main.ui.state.MainIntention
+import java.util.Collections
 
-class MainAdapter(updatedNotes: List<UiNote>, val noteClicked: (MainIntention) -> Unit) : RecyclerView.Adapter<MainAdapter.NoteViewHolder>() {
+class MainAdapter(
+    updatedNotes: List<UiNote>,
+    private val noteClicked: (MainIntention) -> Unit,
+    private val dragStartListener: OnStartDragListener
+): RecyclerView.Adapter<MainAdapter.NoteViewHolder>() {
+
     private val notes: MutableList<UiNote> = ArrayList(updatedNotes)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -22,6 +29,11 @@ class MainAdapter(updatedNotes: List<UiNote>, val noteClicked: (MainIntention) -
 
     override fun getItemCount(): Int = notes.size
 
+    fun swapItems(from: Int, to: Int) {
+        Collections.swap(notes, from, to)
+        notifyItemMoved(from, to)
+    }
+
     fun setNotes(updatedNotes: List<UiNote>) {
         this.notes.clear()
         this.notes.addAll(updatedNotes)
@@ -32,7 +44,8 @@ class MainAdapter(updatedNotes: List<UiNote>, val noteClicked: (MainIntention) -
         setNotes(mutableListOf())
     }
 
-    inner class NoteViewHolder(private val binding: NoteLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class NoteViewHolder(private val binding: NoteLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(note: UiNote) {
             val noteView = NoteView(note.title, note.content)
             binding.noteView = noteView
@@ -42,6 +55,13 @@ class MainAdapter(updatedNotes: List<UiNote>, val noteClicked: (MainIntention) -
             binding.buttonDelete.setOnClickListener {
                 L.i("$TAG - buttonDelete clicked for note: $note")
                 noteClicked(MainIntention.RemoveNote(note, displayDialog = true))
+            }
+
+            binding.buttonDragHandle.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    dragStartListener.onStartDrag(this)
+                }
+                false
             }
         }
     }
