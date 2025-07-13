@@ -16,6 +16,7 @@ hilt-androidx = "1.1.0"
 room = "2.5.2"
 crypto = "1.0.0"
 biometric = "1.1.0"
+livedata = "2.9.1"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -50,6 +51,9 @@ crypto = { module = "androidx.security:security-crypto", version.ref = "crypto" 
 
 #https://developer.android.com/jetpack/androidx/releases/biometric
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+
+# LiveData
+livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "livedata" }
 
 [bundles]
 compose = [ "compose-ui", "compose-ui-tooling-preview", "material3" ]

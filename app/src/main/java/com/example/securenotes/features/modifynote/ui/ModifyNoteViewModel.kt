@@ -17,8 +17,8 @@ import com.example.securenotes.shared.ui.ViewFieldTracked
 import com.example.securenotes.shared.utils.Consts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -32,85 +32,105 @@ class ModifyNoteViewModel @Inject constructor(
     private val getNoteUseCase: GetNoteUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<ModifyNoteState>(ModifyNoteState.Idle)
-    val state: StateFlow<ModifyNoteState> = _state
+    var state: SharedFlow<ModifyNoteState> = MutableSharedFlow()
+    private var _state: MutableSharedFlow<ModifyNoteState> = state as MutableSharedFlow<ModifyNoteState>
 
-    val data = ViewData
+    lateinit var data: ViewData
 
+    private var justBeenDeleted = false
     private var currentNoteId: Int = Consts.NO_ID
 
-    fun setNoteId(noteId: Int) {
-        currentNoteId = noteId
+    fun init(noteId: Int) {
+        this.currentNoteId = noteId
+        this.data = ViewData()
+        this.justBeenDeleted = false
     }
-
-    /*    fun initWithDefaults(title: String = "", content: String = "") {
-            this.data.title.value = title
-            this.data.content.value = content
-            changeTracker.setInitialState(Pair(title, content))
-            setupChangeDetection()
-        }*/
 
     fun action(intention: ModifyNoteIntention) {
         viewModelScope.launch(ioDispatcher) {
             when (intention) {
                 ModifyNoteIntention.FetchData -> fetchData()
                 ModifyNoteIntention.SaveNote -> saveNote()
+                ModifyNoteIntention.MinimizedPressed,
                 ModifyNoteIntention.BackPressed -> backPressed()
-                is ModifyNoteIntention.RemoveNote -> removeNote(intention.note)
+                is ModifyNoteIntention.RemoveNote -> removeNote(intention.noteId, intention.displayDialog)
             }
         }
     }
 
     private suspend fun fetchData() {
-        if (currentNoteId != Consts.NO_ID) {
+        if (isNoteIdValid(currentNoteId)) {
             try {
                 val note = getNoteUseCase(currentNoteId)
                 if (note != null) {
                     setViewData(note.title, note.content)
                 } else {
-                    _state.value = ModifyNoteState.Error("Note not found")
+                    _state.emit(ModifyNoteState.Error("Note not found"))
                 }
             } catch (e: Exception) {
-                _state.value = ModifyNoteState.Error("Failed to load note")
+                _state.emit(ModifyNoteState.Error("Failed to load note"))
             }
         }
     }
 
     private suspend fun saveNote() {
         val note: ModifyNoteModel = getModelWithCurrentData()
+        if (justBeenDeleted) {
+            L.i("saveNote - Note has just been deleted - DO NOT SAVE. Current note = $note")
+            return
+        }
+
         try {
             val resultedNoteId = saveNoteUseCase(note)
             if (resultedNoteId != Consts.NO_ID) {
+                L.i("saveNote - save note = $note")
                 currentNoteId = resultedNoteId
                 resetSave()
-                _state.value = ModifyNoteState.NoteSaved
+                _state.emit(ModifyNoteState.NoteSaved)
             } else {
                 L.i("Error saving note. Latest noteId = ${currentNoteId}")
-                _state.value = ModifyNoteState.Error("Failed to save note")
+                _state.emit(ModifyNoteState.Error("Failed to save note"))
             }
         } catch (e: Exception) {
             L.e("Error saving note: ${e.message}")
-            _state.value = ModifyNoteState.Error("Failed to save note")
+            _state.emit(ModifyNoteState.Error("Failed to save note"))
         }
     }
 
     private suspend fun backPressed() {
         if (hasChangedOccurred()) saveNote()
-        _state.value = ModifyNoteState.Navigation.NavigateBack
+        _state.emit(ModifyNoteState.Navigation.NavigateBack)
     }
 
-    private suspend fun removeNote(note: ModifyNoteModel) {
+    private suspend fun removeNote(noteId: Int, displayDialog: Boolean) {
+        if (!isNoteIdValid(noteId)) {
+            justBeenDeleted = true
+            _state.emit(ModifyNoteState.NoteRemoved(""))
+            _state.emit(ModifyNoteState.Navigation.NavigateBack)
+            return
+        }
+
+        val note = getModelWithCurrentData()
+
+        if (displayDialog) {
+            _state.emit(ModifyNoteState.DisplayRemoveQuestion(note))
+            return
+        }
+
         val noteRemoved = removeNoteUseCase(note.id)
         if (!noteRemoved) {
-            _state.value = ModifyNoteState.Error("Failed to remove note")
+            _state.emit(ModifyNoteState.Error("Failed to remove note"))
             L.e("Failed to remove note with id: ${note.id}")
             return
         }
-        _state.value = ModifyNoteState.NoteRemoved(note.title)
-        _state.value = ModifyNoteState.Navigation.NavigateBack
+        justBeenDeleted = true
+        _state.emit(ModifyNoteState.NoteRemoved(note.title))
+        _state.emit(ModifyNoteState.Navigation.NavigateBack)
     }
 
     private fun hasChangedOccurred(): Boolean = data.isSaveEnabled.value == true
+
+    private fun isNoteIdValid(id: Int): Boolean = id != Consts.NO_ID
 
     private fun getModelWithCurrentData() = ModifyNoteModel(
         id = currentNoteId,
@@ -125,7 +145,7 @@ class ModifyNoteViewModel @Inject constructor(
         }
     }
 
-    object ViewData {
+    class ViewData {
         val title = ViewFieldTracked("")
         val content = ViewFieldTracked("")
         val isSaveEnabled: LiveData<Boolean> = TrackCombineFields(title, content).hasChangedOccurred

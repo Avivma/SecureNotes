@@ -2,4 +2,6 @@
     <string name="waiting_for_fingerprint">Waiting for fingerprint...</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="hint.content">Content</string>
+    <string name="hint.title">Title</string>
 </resources>

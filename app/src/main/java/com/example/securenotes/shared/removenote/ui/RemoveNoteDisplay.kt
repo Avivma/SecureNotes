@@ -11,7 +11,8 @@ class RemoveNoteDisplay @Inject constructor(
     private val displayToast: DisplayToast
 ) {
     fun showNoteRemovedMessage(noteTitle: String) {
-        displayToast("Note \"$noteTitle\" removed successfully")
+        val title: String = if (noteTitle.isEmpty()) "" else "\"$noteTitle\""
+        displayToast("Note $title removed successfully")
     }
 
     fun showDeleteDialog(context: Context, positiveCallback: () -> Unit) {

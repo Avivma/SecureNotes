@@ -15,10 +15,10 @@
         android:padding="16dp">
 
         <EditText
-            android:id="@+id/etTitle"
+            android:id="@+id/textTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Title"
+            android:hint="@string/hint.title"
             android:text="@={data.title.current}"
             android:inputType="textCapSentences"
             android:textDirection="locale"
@@ -29,15 +29,15 @@
             tools:text="הכותרת שלי"/>
 
         <EditText
-            android:id="@+id/etContent"
+            android:id="@+id/textContent"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:hint="Content"
+            android:hint="@string/hint.content"
             android:text="@={data.content.current}"
             android:gravity="top|end"
             android:textDirection="locale"
             android:inputType="textMultiLine"
-            app:layout_constraintTop_toBottomOf="@id/etTitle"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
             app:layout_constraintBottom_toTopOf="@id/btnSave"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -52,5 +52,14 @@
             android:enabled="@{data.isSaveEnabled}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+            app:layout_constraintEnd_toStartOf="@+id/btnSave"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.securenotes.MainActivity
+import com.example.securenotes.core.di.MainDispatcher
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.FragmentMainBinding
 import com.example.securenotes.features.main.ui.model.UiNote
@@ -20,7 +20,7 @@ import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
 import com.example.securenotes.shared.utils.requireActivityTyped
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +29,14 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var adapter: MainAdapter
+
+    private var _adapter: MainAdapter? = null
+    private val adapter get() = _adapter!!
+
+    @MainDispatcher
+    @Inject
+    lateinit var mainDispatcher: CoroutineDispatcher
+
 
     @Inject
     lateinit var displayRemove: RemoveNoteDisplay
@@ -44,38 +51,34 @@ class MainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        L.i("$TAG - onViewCreated")
         setAdapter(emptyList())
         setListeners()
     }
 
     private fun setAdapter(notes: List<UiNote>) {
-        adapter = MainAdapter(notes)
+        val callback: (MainIntention) -> Unit = { intention: MainIntention ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.action(intention)
+            }
+        }
+        _adapter = MainAdapter(notes, callback)
         adapter.setHasStableIds(true)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
+
 
     private fun setListeners() {
         binding.fab.setOnClickListener {
             viewModel.action(MainIntention.AddNote)
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.state.collectLatest { state ->
-                        if (state is MainState.Navigation) navigate(state)
-                        else render(state)
-                    }
-                }
-                launch {
-                    adapter.noteClicked.collectLatest { intention ->
-                        if (intention != null)
-                            viewModel.action(intention)
-                    }
-                }
-            }
-        }
+        // this work because observeStateLiveData reset the livedata each time. That way we don't collect previous clicks
+        viewModel.observeStateLiveData(viewLifecycleOwner, Observer { state ->
+            if (state is MainState.Navigation) navigate(state)
+            else render(state)
+        })
     }
 
     override fun onStart() {
@@ -118,7 +121,6 @@ class MainFragment : Fragment() {
         }
     }
 
-
     private fun handleRemovedNoteState(noteTitle: String) {
         displayRemove.showNoteRemovedMessage(noteTitle)
     }
@@ -128,18 +130,28 @@ class MainFragment : Fragment() {
     }
 
     private fun navigate(navigation: MainState.Navigation) {
+        L.i("$TAG - navigate - navigation: $navigation")
         if (navigation is MainState.Navigation.NavigateToModifyNote) {
             val direction =
                 if (navigation.note == null) MainFragmentDirections.actionMainFragmentToModifyNoteFragment()
                 else MainFragmentDirections.actionMainFragmentToModifyNoteFragment(navigation.note.id)
-            requireActivityTyped<MainActivity>().getNavController().navigate(direction)
+            lifecycleScope.launch(mainDispatcher) {
+                requireActivityTyped<MainActivity>().getNavController().navigate(direction)
+            }
         } else
             L.e("Unhandled navigation state: $navigation")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        L.i("$TAG - onDestroyView")
+        resetAdapter()
         _binding = null
+    }
+
+    private fun resetAdapter() {
+        _adapter = null
+        binding.recyclerView.adapter = null
     }
 
     companion object {

@@ -3,17 +3,13 @@ package com.example.securenotes.features.main.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.NoteLayoutBinding
 import com.example.securenotes.features.main.ui.model.UiNote
 import com.example.securenotes.features.main.ui.state.MainIntention
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
-class MainAdapter(updatedNotes: List<UiNote>) : RecyclerView.Adapter<MainAdapter.NoteViewHolder>() {
+class MainAdapter(updatedNotes: List<UiNote>, val noteClicked: (MainIntention) -> Unit) : RecyclerView.Adapter<MainAdapter.NoteViewHolder>() {
     private val notes: MutableList<UiNote> = ArrayList(updatedNotes)
-
-    private val _noteClicked = MutableStateFlow<MainIntention?>(null)
-    val noteClicked: StateFlow<MainIntention?> = _noteClicked
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val binding = NoteLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -41,13 +37,18 @@ class MainAdapter(updatedNotes: List<UiNote>) : RecyclerView.Adapter<MainAdapter
             val noteView = NoteView(note.title, note.content)
             binding.noteView = noteView
             binding.rowLayout.setOnClickListener {
-                _noteClicked.value = MainIntention.EditNote(note)
+                noteClicked(MainIntention.EditNote(note))
             }
             binding.buttonDelete.setOnClickListener {
-                _noteClicked.value = MainIntention.RemoveNote(note, displayDialog = true)
+                L.i("$TAG - buttonDelete clicked for note: $note")
+                noteClicked(MainIntention.RemoveNote(note, displayDialog = true))
             }
         }
     }
 
     data class NoteView(val title: String, val content: String)
+
+    companion object {
+        private const val TAG = "MainAdapter"
+    }
 }

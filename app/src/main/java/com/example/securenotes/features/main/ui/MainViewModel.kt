@@ -1,5 +1,9 @@
 package com.example.securenotes.features.main.ui
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.securenotes.core.di.IODispatcher
@@ -15,8 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,8 +31,15 @@ class MainViewModel @Inject constructor(
     private val removeNoteUseCase: RemoveNoteUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<MainState>(MainState.Waiting)
-    val state: StateFlow<MainState> = _state
+    var state: LiveData<MainState> = MutableLiveData()
+    private var _state: MutableLiveData<MainState> = state as MutableLiveData<MainState>
+
+    fun observeStateLiveData(owner: LifecycleOwner, observer: Observer<MainState>) {
+        state = MutableLiveData<MainState>()
+        _state = state as MutableLiveData<MainState>
+        state.observe(owner, observer)
+    }
+
     private var dbJob: Job? = null
 
     fun action(intention: MainIntention) {
@@ -51,7 +60,7 @@ class MainViewModel @Inject constructor(
                 .map { it.map(UiNoteConverter::fromDomain) }
                 .collect { notes ->
                     L.i("$TAG - startObservingDb - collect notes: $notes")
-                    _state.value = MainState.DisplayNotes(notes)
+                    _state.postValue(MainState.DisplayNotes(notes))
                 }
         }
     }
@@ -63,34 +72,34 @@ class MainViewModel @Inject constructor(
 
     private fun loadNotes() {
         viewModelScope.launch {
-            _state.value = MainState.Waiting
+            _state.postValue(MainState.Waiting)
             delay(1000)
             val notes = getNotesUseCase().map { UiNoteConverter.fromDomain(it) }
-            _state.value = MainState.DisplayNotes(notes)
+            _state.postValue(MainState.DisplayNotes(notes))
         }
     }
 
     private suspend fun removeNote(note: UiNote, displayDialog: Boolean) {
         if (displayDialog) {
-            _state.value = MainState.DisplayRemoveQuestion(note)
+            _state.postValue(MainState.DisplayRemoveQuestion(note))
             return
         }
 
         val noteRemoved = removeNoteUseCase(note.id)
         if (!noteRemoved) {
-            _state.value = MainState.Error("Failed to remove note")
+            _state.postValue(MainState.Error("Failed to remove note"))
             L.e("Failed to remove note with id: ${note.id}")
             return
         }
-        _state.value = MainState.NoteRemoved(note.title)
+        _state.postValue(MainState.NoteRemoved(note.title))
     }
 
     private fun goToAddNoteScreen() {
-        _state.value = MainState.Navigation.NavigateToModifyNote()
+        _state.postValue(MainState.Navigation.NavigateToModifyNote())
     }
 
     private fun goToEditNoteScreen(note: UiNote) {
-        _state.value = MainState.Navigation.NavigateToModifyNote(note)
+        _state.postValue(MainState.Navigation.NavigateToModifyNote(note))
     }
 
     companion object {
