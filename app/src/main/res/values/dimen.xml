@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_page_list_margin">12dp</dimen>
+    <dimen name="rows_gap_margin">2dp</dimen>
+    <dimen name="note_row_padding">12dp</dimen>
+    <dimen name="note_row_icon_size">32dp</dimen>
+    <dimen name="note_title">16sp</dimen>
+    <dimen name="note_content">14sp</dimen>
+</resources>

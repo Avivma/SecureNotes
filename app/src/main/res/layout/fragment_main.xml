@@ -29,7 +29,7 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
+                android:padding="@dimen/main_page_list_margin"
                 android:visibility="@{displayNotes ? View.VISIBLE : View.GONE, default=gone}"
                 tools:visibility="visible"
                 tools:listitem="@layout/note_layout"

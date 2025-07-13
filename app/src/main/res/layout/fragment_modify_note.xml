@@ -14,6 +14,7 @@
         android:layoutDirection="locale"
         android:padding="16dp">
 
+
         <EditText
             android:id="@+id/textTitle"
             android:layout_width="0dp"
@@ -21,8 +22,9 @@
             android:hint="@string/hint.title"
             android:text="@={data.title.current}"
             android:inputType="textCapSentences"
-            android:textDirection="locale"
-            android:gravity="end"
+            android:gravity="top|start"
+            android:textDirection="rtl"
+            android:textSize="@dimen/note_title"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,9 +36,10 @@
             android:layout_height="0dp"
             android:hint="@string/hint.content"
             android:text="@={data.content.current}"
-            android:gravity="top|end"
-            android:textDirection="locale"
+            android:gravity="top|start"
+            android:textDirection="rtl"
             android:inputType="textMultiLine"
+            android:textSize="@dimen/note_content"
             app:layout_constraintTop_toBottomOf="@id/textTitle"
             app:layout_constraintBottom_toTopOf="@id/btnSave"
             app:layout_constraintStart_toStartOf="parent"
