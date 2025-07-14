@@ -16,6 +16,7 @@ import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.FragmentModifyNoteBinding
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteIntention
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteState
+import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
 import com.example.securenotes.shared.ui.DisplayToast
 import com.example.securenotes.shared.utils.requireActivityTyped
@@ -76,6 +77,26 @@ class ModifyNoteFragment : Fragment() {
             viewModel.action(ModifyNoteIntention.RemoveNote(args.noteId, displayDialog = true))
         }
 
+        binding.btnUndo.setOnClickListener {
+            viewModel.action(ModifyNoteIntention.Undo)
+        }
+
+        binding.btnRedo.setOnClickListener {
+            viewModel.action(ModifyNoteIntention.Redo)
+        }
+
+        binding.textTitle.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                viewModel.action(ModifyNoteIntention.GotFocus(ViewFocus.TitleFocused))
+            }
+        }
+
+        binding.textContent.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                viewModel.action(ModifyNoteIntention.GotFocus(ViewFocus.ContentFocused))
+            }
+        }
+
         backPressedCallback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
@@ -90,7 +111,6 @@ class ModifyNoteFragment : Fragment() {
 
     private fun render(state: ModifyNoteState) {
         when (state) {
-            ModifyNoteState.Idle -> Unit
             ModifyNoteState.NoteSaved -> displayToast("Note saved successfully")
             is ModifyNoteState.DisplayRemoveQuestion -> displayRemove.showDeleteDialog(requireContext()) { viewModel.action(
                 ModifyNoteIntention.RemoveNote(state.note.id)) }

@@ -1,6 +1,5 @@
 package com.example.securenotes.features.modifynote.ui
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.securenotes.core.di.IODispatcher
@@ -11,9 +10,10 @@ import com.example.securenotes.features.modifynote.domain.usecase.GetNoteUseCase
 import com.example.securenotes.features.modifynote.domain.usecase.SaveNoteUseCase
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteIntention
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteState
-import com.example.securenotes.features.modifynote.ui.utils.TrackCombineFields
+import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager
+import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewData
+import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus
 import com.example.securenotes.shared.removenote.domain.usecase.RemoveNoteUseCase
-import com.example.securenotes.shared.ui.ViewFieldTracked
 import com.example.securenotes.shared.utils.Consts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,7 +33,10 @@ class ModifyNoteViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state: SharedFlow<ModifyNoteState> = MutableSharedFlow()
-    private var _state: MutableSharedFlow<ModifyNoteState> = state as MutableSharedFlow<ModifyNoteState>
+    private var _state: MutableSharedFlow<ModifyNoteState> =
+        state as MutableSharedFlow<ModifyNoteState>
+
+    private val viewsManager = ModifyNoteViewsManager()
 
     lateinit var data: ViewData
 
@@ -42,7 +45,7 @@ class ModifyNoteViewModel @Inject constructor(
 
     fun init(noteId: Int) {
         this.currentNoteId = noteId
-        this.data = ViewData()
+        this.data = viewsManager.getData()
         this.justBeenDeleted = false
     }
 
@@ -50,10 +53,18 @@ class ModifyNoteViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             when (intention) {
                 ModifyNoteIntention.FetchData -> fetchData()
+                is ModifyNoteIntention.GotFocus -> gotFocus(intention.focusView)
                 ModifyNoteIntention.SaveNote -> saveNote()
                 ModifyNoteIntention.MinimizedPressed,
                 ModifyNoteIntention.BackPressed -> backPressed()
-                is ModifyNoteIntention.RemoveNote -> removeNote(intention.noteId, intention.displayDialog)
+
+                is ModifyNoteIntention.RemoveNote -> removeNote(
+                    intention.noteId,
+                    intention.displayDialog
+                )
+
+                ModifyNoteIntention.Redo -> redo()
+                ModifyNoteIntention.Undo -> undo()
             }
         }
     }
@@ -63,13 +74,19 @@ class ModifyNoteViewModel @Inject constructor(
             try {
                 val note = getNoteUseCase(currentNoteId)
                 if (note != null) {
-                    setViewData(note.title, note.content)
+                    setData(note.title, note.content)
                 } else {
                     _state.emit(ModifyNoteState.Error("Note not found"))
                 }
             } catch (e: Exception) {
                 _state.emit(ModifyNoteState.Error("Failed to load note"))
             }
+        }
+    }
+
+    private suspend fun gotFocus(focusView: ViewFocus) {
+        withContext(mainDispatcher) {
+            viewsManager.gotFocus(focusView)
         }
     }
 
@@ -82,10 +99,10 @@ class ModifyNoteViewModel @Inject constructor(
 
         try {
             val resultedNoteId = saveNoteUseCase(note)
-            if (resultedNoteId != Consts.NO_ID) {
+            if (isNoteIdValid(resultedNoteId)) {
                 L.i("saveNote - save note = $note")
                 currentNoteId = resultedNoteId
-                resetSave()
+                updateData()
                 _state.emit(ModifyNoteState.NoteSaved)
             } else {
                 L.i("Error saving note. Latest noteId = ${currentNoteId}")
@@ -127,34 +144,42 @@ class ModifyNoteViewModel @Inject constructor(
         _state.emit(ModifyNoteState.Navigation.NavigateBack)
     }
 
+    private suspend fun undo() {
+        withContext(mainDispatcher) {
+            viewsManager.undo()
+        }
+    }
+
+    private suspend fun redo() {
+        withContext(mainDispatcher) {
+            viewsManager.redo()
+        }
+    }
+
     private fun hasChangedOccurred(): Boolean = data.isSaveEnabled.value == true
 
     private fun isNoteIdValid(id: Int): Boolean = id != Consts.NO_ID
 
     private fun getModelWithCurrentData() = ModifyNoteModel(
         id = currentNoteId,
-        title = data.title.current.value.orEmpty(),
-        content = data.content.current.value.orEmpty(),
+        title = data.title.value.orEmpty(),
+        content = data.content.value.orEmpty(),
     )
 
-    private suspend fun resetSave() {
+    private suspend fun updateData() {
         withContext(mainDispatcher) {
-            data.title.updateOrigin()
-            data.content.updateOrigin()
+            viewsManager.updateOrigin()
         }
     }
 
-    class ViewData {
-        val title = ViewFieldTracked("")
-        val content = ViewFieldTracked("")
-        val isSaveEnabled: LiveData<Boolean> = TrackCombineFields(title, content).hasChangedOccurred
+    private suspend fun setData(title: String, content: String) {
+        withContext(mainDispatcher) {
+            viewsManager.set(title, content)
+        }
     }
 
-    private suspend fun setViewData(title: String, content: String) {
-        withContext(mainDispatcher) {
-            data.title.set(title)
-            data.content.set(content)
-        }
+    companion object {
+        private const val TAG = "ModifyNoteViewModel"
     }
 }
 

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="data"
-            type="com.example.securenotes.features.modifynote.ui.ModifyNoteViewModel.ViewData" />
+            type="com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,11 +20,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint.title"
-            android:text="@={data.title.current}"
             android:inputType="textCapSentences"
             android:gravity="top|start"
             android:textDirection="rtl"
             android:textSize="@dimen/note_title"
+            android:text="@={data.title}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,11 +35,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:hint="@string/hint.content"
-            android:text="@={data.content.current}"
             android:gravity="top|start"
             android:textDirection="rtl"
             android:inputType="textMultiLine"
             android:textSize="@dimen/note_content"
+            android:text="@={data.content}"
             app:layout_constraintTop_toBottomOf="@id/textTitle"
             app:layout_constraintBottom_toTopOf="@id/btnSave"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,22 +47,58 @@
             tools:text="תוכן ההערה שלי"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/save"
+            android:layout_height="@dimen/modify_icon_height"
+            android:layout_width="@dimen/modify_icon_width"
+            android:src="@drawable/ic_save"
+            android:contentDescription="@string/save"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:enabled="@{data.isSaveEnabled}"
+            app:setAlpha="@{data.isSaveEnabled}"
+            app:tint="@color/cardview_dark_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
+            android:layout_height="@dimen/modify_icon_height"
+            android:layout_width="@dimen/modify_icon_width"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="@string/delete"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_marginEnd="16dp"
+            app:tint="@color/cardview_dark_background"
             app:layout_constraintBottom_toBottomOf="@+id/btnSave"
             app:layout_constraintEnd_toStartOf="@+id/btnSave"/>
+
+        <ImageButton
+            android:id="@+id/btnUndo"
+            android:layout_height="@dimen/modify_icon_height"
+            android:layout_width="@dimen/modify_icon_width"
+            android:src="@drawable/ic_undo"
+            android:contentDescription="@string/undo"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:enabled="@{data.canUndo}"
+            app:setAlpha="@{data.canUndo}"
+            app:tint="@color/cardview_dark_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+            />
+
+        <ImageButton
+            android:id="@+id/btnRedo"
+            android:layout_height="@dimen/modify_icon_height"
+            android:layout_width="@dimen/modify_icon_width"
+            android:src="@drawable/ic_redo"
+            android:contentDescription="@string/redo"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="8dp"
+            android:enabled="@{data.canRedo}"
+            app:setAlpha="@{data.canRedo}"
+            app:tint="@color/cardview_dark_background"
+            app:layout_constraintStart_toEndOf="@+id/btnUndo"
+            app:layout_constraintBottom_toBottomOf="@+id/btnUndo"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

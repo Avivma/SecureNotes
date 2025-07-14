@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Main Page -->
     <dimen name="main_page_list_margin">12dp</dimen>
     <dimen name="rows_gap_margin">2dp</dimen>
     <dimen name="note_row_width_padding">12dp</dimen>
@@ -8,4 +9,8 @@
     <dimen name="note_row_icon_margin">8dp</dimen>
     <dimen name="note_title">16sp</dimen>
     <dimen name="note_content">14sp</dimen>
+
+    <!-- Modify page -->
+    <dimen name="modify_icon_height">36dp</dimen>
+    <dimen name="modify_icon_width">60dp</dimen>
 </resources>

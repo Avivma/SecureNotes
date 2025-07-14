@@ -5,4 +5,6 @@
     <string name="hint.title">כותרת</string>
     <string name="hint.content">תוכן</string>
     <string name="drag_drop"><![CDATA[Drag & Drop]]></string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
 </resources>

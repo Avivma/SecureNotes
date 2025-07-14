@@ -1,9 +1,9 @@
 package com.example.securenotes.features.modifynote.ui.state
 
 import com.example.securenotes.features.modifynote.domain.model.ModifyNoteModel
+import com.example.securenotes.features.modifynote.ui.ModifyNoteViewModel
 
 sealed class ModifyNoteState {
-    object Idle : ModifyNoteState()
     object NoteSaved : ModifyNoteState()
     data class DisplayRemoveQuestion(val note: ModifyNoteModel): ModifyNoteState()
     data class NoteRemoved(val title: String) : ModifyNoteState()
