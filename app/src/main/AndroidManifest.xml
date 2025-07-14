@@ -9,6 +9,7 @@
 
         <activity
             android:name="com.example.securenotes.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
 
             <intent-filter>

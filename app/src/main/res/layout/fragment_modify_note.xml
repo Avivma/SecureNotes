@@ -1,8 +1,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="data"
             type="com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewData" />
@@ -11,94 +12,119 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
         android:layoutDirection="locale"
         android:padding="16dp">
 
-
-        <EditText
-            android:id="@+id/textTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint.title"
-            android:inputType="textCapSentences"
-            android:gravity="top|start"
-            android:textDirection="rtl"
-            android:textSize="@dimen/note_title"
-            android:text="@={data.title}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="הכותרת שלי"/>
-
-        <EditText
-            android:id="@+id/textContent"
-            android:layout_width="0dp"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollContainer"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:hint="@string/hint.content"
-            android:gravity="top|start"
-            android:textDirection="rtl"
-            android:inputType="textMultiLine"
-            android:textSize="@dimen/note_content"
-            android:text="@={data.content}"
-            app:layout_constraintTop_toBottomOf="@id/textTitle"
-            app:layout_constraintBottom_toTopOf="@id/btnSave"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottomButtonBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:hint="@string/hint.title"
+                    android:inputType="textCapSentences"
+                    android:text="@={data.title}"
+                    android:textDirection="rtl"
+                    android:textSize="@dimen/note_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="הכותרת שלי" />
+
+                <EditText
+                    android:id="@+id/textContent"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="top|start"
+                    android:hint="@string/hint.content"
+                    android:inputType="textMultiLine"
+                    android:text="@={data.content}"
+                    android:textDirection="rtl"
+                    android:textSize="@dimen/note_content"
+                    app:layout_constraintTop_toBottomOf="@id/textTitle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="תוכן ההערה שלי"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomButtonBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="תוכן ההערה שלי"
-            />
+            >
+<!--            android:background="?attr/colorSurface"-->
 
-        <ImageButton
-            android:id="@+id/btnSave"
-            android:layout_height="@dimen/modify_icon_height"
-            android:layout_width="@dimen/modify_icon_width"
-            android:src="@drawable/ic_save"
-            android:contentDescription="@string/save"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:enabled="@{data.isSaveEnabled}"
-            app:setAlpha="@{data.isSaveEnabled}"
-            app:tint="@color/cardview_dark_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <ImageButton
+                android:id="@+id/btnSave"
+                android:layout_width="@dimen/modify_icon_width"
+                android:layout_height="@dimen/modify_icon_height"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/save"
+                android:enabled="@{data.isSaveEnabled}"
+                android:src="@drawable/ic_save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:setAlpha="@{data.isSaveEnabled}"
+                app:tint="@color/cardview_dark_background" />
 
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_height="@dimen/modify_icon_height"
-            android:layout_width="@dimen/modify_icon_width"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="@string/delete"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginEnd="16dp"
-            app:tint="@color/cardview_dark_background"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSave"
-            app:layout_constraintEnd_toStartOf="@+id/btnSave"/>
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="@dimen/modify_icon_width"
+                android:layout_height="@dimen/modify_icon_height"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/delete"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+                app:layout_constraintEnd_toStartOf="@+id/btnSave"
+                app:tint="@color/cardview_dark_background" />
 
-        <ImageButton
-            android:id="@+id/btnUndo"
-            android:layout_height="@dimen/modify_icon_height"
-            android:layout_width="@dimen/modify_icon_width"
-            android:src="@drawable/ic_undo"
-            android:contentDescription="@string/undo"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:enabled="@{data.canUndo}"
-            app:setAlpha="@{data.canUndo}"
-            app:tint="@color/cardview_dark_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSave"
-            />
+            <ImageButton
+                android:id="@+id/btnUndo"
+                android:layout_width="@dimen/modify_icon_width"
+                android:layout_height="@dimen/modify_icon_height"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/undo"
+                android:enabled="@{data.canUndo}"
+                android:src="@drawable/ic_undo"
+                app:layout_constraintBottom_toBottomOf="@+id/btnSave"
+                app:layout_constraintStart_toStartOf="parent"
+                app:setAlpha="@{data.canUndo}"
+                app:tint="@color/cardview_dark_background" />
 
-        <ImageButton
-            android:id="@+id/btnRedo"
-            android:layout_height="@dimen/modify_icon_height"
-            android:layout_width="@dimen/modify_icon_width"
-            android:src="@drawable/ic_redo"
-            android:contentDescription="@string/redo"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginStart="8dp"
-            android:enabled="@{data.canRedo}"
-            app:setAlpha="@{data.canRedo}"
-            app:tint="@color/cardview_dark_background"
-            app:layout_constraintStart_toEndOf="@+id/btnUndo"
-            app:layout_constraintBottom_toBottomOf="@+id/btnUndo"
-            />
+            <ImageButton
+                android:id="@+id/btnRedo"
+                android:layout_width="@dimen/modify_icon_width"
+                android:layout_height="@dimen/modify_icon_height"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/redo"
+                android:enabled="@{data.canRedo}"
+                android:src="@drawable/ic_redo"
+                app:layout_constraintBottom_toBottomOf="@+id/btnUndo"
+                app:layout_constraintStart_toEndOf="@+id/btnUndo"
+                app:setAlpha="@{data.canRedo}"
+                app:tint="@color/cardview_dark_background" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
