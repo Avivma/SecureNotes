@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data />
+    <data>
+        <import type="android.view.View" />
+        <variable name="retryVisible" type="java.lang.Boolean"/>
+    </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="32dp"
-        tools:context=".features.biometric.ui.BiometricFragment">
+        tools:context=".features.biometric.ui.BiometricFragment"
+        >
 
         <TextView
             android:id="@+id/biometricStatusText"
@@ -17,7 +21,23 @@
             android:layout_gravity="center"
             android:textSize="24sp"
             android:text="@string/waiting_for_fingerprint"
-            tools:text="Waiting for fingerprint..." />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Waiting for fingerprint..."
+            />
 
-    </FrameLayout>
+        <ImageButton
+            android:id="@+id/biometricRetryButton"
+            android:layout_width="@dimen/biometric_icon_size"
+            android:layout_height="@dimen/biometric_icon_size"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/ic_retry"
+            android:visibility="@{retryVisible ? View.VISIBLE : View.GONE, default=invisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

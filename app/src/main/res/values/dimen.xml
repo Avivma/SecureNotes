@@ -13,4 +13,7 @@
     <!-- Modify page -->
     <dimen name="modify_icon_height">36dp</dimen>
     <dimen name="modify_icon_width">60dp</dimen>
+
+    <!-- biometric -->
+    <dimen name="biometric_icon_size">60dp</dimen>
 </resources>

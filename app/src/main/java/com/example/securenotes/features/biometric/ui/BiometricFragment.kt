@@ -51,6 +51,12 @@ class BiometricFragment : Fragment() {
             }
         }
 
+        binding.biometricRetryButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.action(BiometricIntention.AuthenticateUser(getAuthenticationParams()))
+            }
+        }
+
         viewModel.authenticationResultLiveData.observe(viewLifecycleOwner) {
             if (it is BiometricState.Navigation) navigate(it)
             else render(it)
@@ -59,14 +65,23 @@ class BiometricFragment : Fragment() {
 
     private fun render(state: BiometricState) {
         when (state) {
-            BiometricState.AskingForBiometric -> {}
-            BiometricState.DisplayFailedMessage -> displayToast("Authentication failed") //TODO: add retry option
+            BiometricState.AskingForBiometric -> askingForBiometric()
+            BiometricState.DisplayFailedMessage -> failed()
             BiometricState.DisplayUnavailableMessage -> displayToast("Authentication unavailable")
             else -> {
                 L.e("Unhandled state: $state")
                 throw IllegalStateException("Unhandled state: $state")
             }
         }
+    }
+
+    private fun askingForBiometric() {
+        binding.retryVisible = false
+    }
+
+    private fun failed() {
+        binding.retryVisible = true
+        displayToast("Authentication failed")
     }
 
     private fun navigate(state: BiometricState.Navigation) {
