@@ -37,4 +37,10 @@
             app:popUpTo="@id/biometricFragment"
             app:popUpToInclusive="true"/>
     </fragment>
+
+    <action
+        android:id="@+id/action_global_biometricFragment"
+        app:destination="@id/biometricFragment"
+        app:popUpTo="@id/biometricFragment"
+        />
 </navigation>

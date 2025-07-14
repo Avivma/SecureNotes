@@ -59,8 +59,8 @@ class BiometricFragment : Fragment() {
 
     private fun render(state: BiometricState) {
         when (state) {
-            BiometricState.AskingForBiometric -> TODO("Not yet implemented")
-            BiometricState.DisplayFailedMessage -> displayToast("Authentication failed")
+            BiometricState.AskingForBiometric -> {}
+            BiometricState.DisplayFailedMessage -> displayToast("Authentication failed") //TODO: add retry option
             BiometricState.DisplayUnavailableMessage -> displayToast("Authentication unavailable")
             else -> {
                 L.e("Unhandled state: $state")

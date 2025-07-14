@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.securenotes.core.utils.L
@@ -43,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        val lifecycleObserver = AppLifecycleTracker(getNavController())
+        ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleObserver)
 
         L.setup()
 

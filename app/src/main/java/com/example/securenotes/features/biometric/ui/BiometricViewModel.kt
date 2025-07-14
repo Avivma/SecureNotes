@@ -1,6 +1,9 @@
 package com.example.securenotes.features.biometric.ui
 
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.annotation.MainThread
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -66,7 +69,17 @@ class BiometricViewModel @Inject constructor(
                 }
             })
 
-        biometricPrompt?.authenticate(promptInfo)
+        authenticateSafe(promptInfo)
+    }
+
+    fun authenticateSafe(info: BiometricPrompt.PromptInfo) {
+        Handler(Looper.getMainLooper()).post {
+            try {
+                biometricPrompt?.authenticate(info)
+            } catch (e: IllegalStateException) {
+                Log.e("BiometricAuth", "Biometric prompt failed: ${e.message}")
+            }
+        }
     }
 
     private fun isAuthenticationAvailable(): Boolean {
