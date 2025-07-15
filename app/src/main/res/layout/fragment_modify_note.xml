@@ -16,13 +16,101 @@
         android:layoutDirection="locale"
         android:padding="16dp">
 
+        <LinearLayout
+            android:id="@+id/search_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingEnd="36dp"
+                    android:background="@drawable/search_edit_text_background"
+                    android:padding="8dp" />
+
+                <ImageButton
+                    android:id="@+id/cancelSearchButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="6dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_cancel"
+                    android:contentDescription="@string/cancel_search"
+                    android:visibility="invisible"
+                    android:alpha="0"/>
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/search"
+                android:src="@drawable/ic_search"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:visibility="invisible"
+                android:alpha="0"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/searchNavigationLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:visibility="gone"
+            android:alpha="0"
+            app:layout_constraintTop_toBottomOf="@+id/search_container"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/searchPrevButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/previous_match"
+                android:src="@drawable/ic_previous"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+            <TextView
+                android:id="@+id/searchMatchCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:textSize="@dimen/note_content"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                tools:text="1 / 4"/>
+
+            <ImageButton
+                android:id="@+id/searchNextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/next_match"
+                android:src="@drawable/ic_next"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+        </LinearLayout>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
             android:overScrollMode="never"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchNavigationLayout"
             app:layout_constraintBottom_toTopOf="@+id/bottomButtonBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
                     android:hint="@string/hint.title"
-                    android:inputType="textCapSentences"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:text="@={data.title}"
                     android:textDirection="rtl"
                     android:textSize="@dimen/note_title"
@@ -85,7 +173,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:setAlpha="@{data.isSaveEnabled}"
-                app:tint="@color/cardview_dark_background" />
+                app:tint="@color/icon_tint_color" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
@@ -97,7 +185,7 @@
                 android:src="@drawable/ic_delete"
                 app:layout_constraintBottom_toBottomOf="@+id/btnSave"
                 app:layout_constraintEnd_toStartOf="@+id/btnSave"
-                app:tint="@color/cardview_dark_background" />
+                app:tint="@color/icon_tint_color" />
 
             <ImageButton
                 android:id="@+id/btnUndo"
@@ -110,7 +198,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/btnSave"
                 app:layout_constraintStart_toStartOf="parent"
                 app:setAlpha="@{data.canUndo}"
-                app:tint="@color/cardview_dark_background" />
+                app:tint="@color/icon_tint_color" />
 
             <ImageButton
                 android:id="@+id/btnRedo"
@@ -124,7 +212,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/btnUndo"
                 app:layout_constraintStart_toEndOf="@+id/btnUndo"
                 app:setAlpha="@{data.canRedo}"
-                app:tint="@color/cardview_dark_background" />
+                app:tint="@color/icon_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

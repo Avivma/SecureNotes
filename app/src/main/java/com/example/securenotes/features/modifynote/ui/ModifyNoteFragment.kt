@@ -1,9 +1,12 @@
 package com.example.securenotes.features.modifynote.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,6 +24,7 @@ import com.example.securenotes.features.modifynote.ui.state.ModifyNoteIntention
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteState
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
+import com.example.securenotes.shared.search.SearchHelper
 import com.example.securenotes.shared.ui.DisplayToast
 import com.example.securenotes.shared.utils.requireActivityTyped
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +40,7 @@ class ModifyNoteFragment : Fragment() {
     private val viewModel: ModifyNoteViewModel by viewModels()
     private val args: ModifyNoteFragmentArgs by navArgs()
     private lateinit var backPressedCallback: OnBackPressedCallback
+    private lateinit var searchHelper: SearchHelper
 
     @Inject
     lateinit var displayRemove: RemoveNoteDisplay
@@ -115,6 +120,66 @@ class ModifyNoteFragment : Fragment() {
             }
         }
 
+        setSearchListener()
+        setBackPressedListener()
+    }
+
+    private fun setSearchListener() {
+        searchHelper = SearchHelper(requireContext(), binding.textTitle, binding.textContent) {
+            matchText ->
+            binding.searchMatchCounter.text = matchText
+            // Animate the navigation bar to appear when there are matches
+            val hasResults = matchText != "0/0"
+            animateGoneVisible(binding.searchNavigationLayout, hasResults)
+        }
+
+        binding.searchButton.setOnClickListener {
+            searchHelper.performSearch(binding.searchEditText.text.toString())
+        }
+
+        binding.cancelSearchButton.setOnClickListener {
+            binding.searchEditText.text.clear()
+            searchHelper.clearSearch()
+        }
+
+        binding.searchNextButton.setOnClickListener {
+            searchHelper.goToNextMatch()
+        }
+
+        binding.searchPrevButton.setOnClickListener {
+            searchHelper.goToPreviousMatch()
+        }
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val hasText = !s.isNullOrBlank()
+
+                animateInvisibleVisible(binding.searchButton, hasText)
+                animateInvisibleVisible(binding.cancelSearchButton, hasText)
+
+                if (!hasText) {
+                    searchHelper.clearSearch()
+                    animateGoneVisible(binding.searchNavigationLayout, false)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+// Keyboard "Search" action:
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchHelper.performSearch(binding.searchEditText.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+
+    }
+
+    private fun setBackPressedListener() {
         backPressedCallback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
                 // Handle the back button event
@@ -123,7 +188,6 @@ class ModifyNoteFragment : Fragment() {
                 isEnabled = false
             }
         }
-
         requireActivityTyped<MainActivity>().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
     }
 
@@ -150,6 +214,35 @@ class ModifyNoteFragment : Fragment() {
         }
         else
             L.e("Unhandled navigation state: $navigation")
+    }
+
+    fun animateGoneVisible(view: View, show: Boolean) {
+        if (show) {
+            view.visibility = View.VISIBLE
+            view.animate()
+                .alpha(1f)
+                .setDuration(200)
+                .start()
+        } else {
+            view.animate()
+                .alpha(0f)
+                .setDuration(200)
+                .withEndAction {
+                    view.visibility = View.GONE
+                }
+                .start()
+        }
+    }
+
+    fun animateInvisibleVisible(view: View, show: Boolean) {
+        if (show) {
+            view.visibility = View.VISIBLE
+            view.animate().alpha(1f).setDuration(200).start()
+        } else {
+            view.animate().alpha(0f).setDuration(200).withEndAction {
+                view.visibility = View.INVISIBLE
+            }.start()
+        }
     }
 
     override fun onStop() {

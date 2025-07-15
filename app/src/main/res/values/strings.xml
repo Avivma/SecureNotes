@@ -7,4 +7,8 @@
     <string name="drag_drop"><![CDATA[Drag & Drop]]></string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="cancel_search">Cancel search</string>
+    <string name="previous_match">Previous match</string>
+    <string name="next_match">Next match</string>
+    <string name="search">Search</string>
 </resources>

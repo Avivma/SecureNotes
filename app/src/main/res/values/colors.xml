@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General Colors -->
+    <color name="icon_color">@color/cardview_dark_background</color>
+    <color name="icon_tint_color">@color/cardview_dark_background</color>
+
+    <!-- search -->
+    <color name="search_current_match_highlight">#FFB34F</color>
+<!--    #FFFF00-->
+<!--    #FFD54F-->
+    <color name="search_other_match_highlight">#9BFFE100</color>
+</resources>

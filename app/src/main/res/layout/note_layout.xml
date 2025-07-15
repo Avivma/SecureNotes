@@ -34,7 +34,7 @@
                 android:src="@drawable/ic_drag_handle"
                 android:contentDescription="@string/drag_drop"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/cardview_dark_background"
+                app:tint="@color/icon_tint_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -47,7 +47,7 @@
                 android:contentDescription="@string/delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_marginEnd="@dimen/note_row_icon_margin"
-                app:tint="@color/cardview_dark_background"
+                app:tint="@color/icon_tint_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/buttonDragHandle" />
