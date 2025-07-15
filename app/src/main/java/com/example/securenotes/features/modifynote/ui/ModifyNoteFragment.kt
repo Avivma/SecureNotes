@@ -8,8 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,15 +21,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.securenotes.MainActivity
+import com.example.securenotes.R
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.FragmentModifyNoteBinding
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteIntention
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteState
+import com.example.securenotes.features.modifynote.ui.utils.MenuHelper
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
 import com.example.securenotes.shared.search.SearchHelper
 import com.example.securenotes.shared.ui.DisplayToast
 import com.example.securenotes.shared.utils.requireActivityTyped
+import com.example.securenotes.shared.utils.slideDown
+import com.example.securenotes.shared.utils.slideUp
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -92,12 +99,12 @@ class ModifyNoteFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.btnSave.setOnClickListener {
-            viewModel.action(ModifyNoteIntention.SaveNote)
+        binding.menuButton.setOnClickListener { view ->
+            viewModel.action(ModifyNoteIntention.OpenMenu)
         }
 
-        binding.btnDelete.setOnClickListener {
-            viewModel.action(ModifyNoteIntention.RemoveNote(args.noteId, displayDialog = true))
+        binding.btnSave.setOnClickListener {
+            viewModel.action(ModifyNoteIntention.SaveNote)
         }
 
         binding.btnUndo.setOnClickListener {
@@ -129,15 +136,27 @@ class ModifyNoteFragment : Fragment() {
             matchText ->
             binding.searchMatchCounter.text = matchText
             // Animate the navigation bar to appear when there are matches
-            val hasResults = matchText != "0/0"
-            animateGoneVisible(binding.searchNavigationLayout, hasResults)
+            val SHOW = true
+            if (matchText.isEmpty()) {
+                searchHelper.clearSearch()
+                displayToast("No matches found")
+                animateGoneVisible(binding.searchNavigationLayout, !SHOW)
+            } else {
+                animateGoneVisible(binding.searchNavigationLayout, SHOW)
+            }
+        }
+
+        binding.cancelSearchButton.setOnClickListener {
+            if (binding.searchContainer.isVisible) {
+                binding.searchContainer.slideUp()
+            }
         }
 
         binding.searchButton.setOnClickListener {
             searchHelper.performSearch(binding.searchEditText.text.toString())
         }
 
-        binding.cancelSearchButton.setOnClickListener {
+        binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text.clear()
             searchHelper.clearSearch()
         }
@@ -153,9 +172,9 @@ class ModifyNoteFragment : Fragment() {
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val hasText = !s.isNullOrBlank()
+                binding.searchHasText = hasText
 
-                animateInvisibleVisible(binding.searchButton, hasText)
-                animateInvisibleVisible(binding.cancelSearchButton, hasText)
+                animateInvisibleVisible(binding.clearSearchButton, hasText)
 
                 if (!hasText) {
                     searchHelper.clearSearch()
@@ -198,11 +217,41 @@ class ModifyNoteFragment : Fragment() {
                 ModifyNoteIntention.RemoveNote(state.note.id)) }
             is ModifyNoteState.Error -> Snackbar.make(requireView(), "An error while saving has occurred", Snackbar.LENGTH_SHORT).show()
             is ModifyNoteState.NoteRemoved -> displayRemove.showNoteRemovedMessage(state.title)
+            ModifyNoteState.DisplayMenu -> createMenu()
+            ModifyNoteState.DisplaySearchBar -> revealSearchBar()
 
             else -> {
                 L.e("Unhandled state: $state")
                 throw IllegalStateException("Unhandled state: $state")
             }
+        }
+    }
+
+    private fun createMenu() {
+        val popup = PopupMenu(requireContext(), binding.menuButton)
+        popup.menuInflater.inflate(R.menu.modify_note_menu, popup.menu)
+        // Force icons to show
+        MenuHelper.makeMenuShowIcons(popup)
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_search -> {
+                    viewModel.action(ModifyNoteIntention.RevealSearch)
+                    true
+                }
+                R.id.action_delete -> {
+                    viewModel.action(ModifyNoteIntention.RemoveNote(args.noteId, displayDialog = true))
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun revealSearchBar() {
+        if (binding.searchContainer.isGone) {
+            binding.searchContainer.slideDown()
         }
     }
 
@@ -216,14 +265,14 @@ class ModifyNoteFragment : Fragment() {
             L.e("Unhandled navigation state: $navigation")
     }
 
-    fun animateGoneVisible(view: View, show: Boolean) {
-        if (show) {
+    private fun animateGoneVisible(view: View, show: Boolean) {
+        if (show && !view.isVisible) {
             view.visibility = View.VISIBLE
             view.animate()
                 .alpha(1f)
                 .setDuration(200)
                 .start()
-        } else {
+        } else if (!show && !view.isGone) {
             view.animate()
                 .alpha(0f)
                 .setDuration(200)
@@ -234,7 +283,7 @@ class ModifyNoteFragment : Fragment() {
         }
     }
 
-    fun animateInvisibleVisible(view: View, show: Boolean) {
+    private fun animateInvisibleVisible(view: View, show: Boolean) {
         if (show) {
             view.visibility = View.VISIBLE
             view.animate().alpha(1f).setDuration(200).start()

@@ -11,4 +11,6 @@ sealed class ModifyNoteIntention {
     data class RemoveNote(val noteId: Int, val displayDialog: Boolean = false) : ModifyNoteIntention()
     object Undo : ModifyNoteIntention()
     object Redo : ModifyNoteIntention()
+    object RevealSearch : ModifyNoteIntention()
+    object OpenMenu : ModifyNoteIntention()
 }

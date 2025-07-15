@@ -65,6 +65,8 @@ class ModifyNoteViewModel @Inject constructor(
 
                 ModifyNoteIntention.Redo -> redo()
                 ModifyNoteIntention.Undo -> undo()
+                ModifyNoteIntention.OpenMenu -> openMenu()
+                ModifyNoteIntention.RevealSearch -> revealSearch()
             }
         }
     }
@@ -154,6 +156,13 @@ class ModifyNoteViewModel @Inject constructor(
         withContext(mainDispatcher) {
             viewsManager.redo()
         }
+    }
+
+    private suspend fun openMenu() {
+        _state.emit(ModifyNoteState.DisplayMenu)
+    }
+    private suspend fun revealSearch() {
+        _state.emit(ModifyNoteState.DisplaySearchBar)
     }
 
     private fun hasChangedOccurred(): Boolean = data.isSaveEnabled.value == true

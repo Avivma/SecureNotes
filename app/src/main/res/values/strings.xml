@@ -4,6 +4,7 @@
     <string name="delete">Delete</string>
     <string name="hint.title">כותרת</string>
     <string name="hint.content">תוכן</string>
+    <string name="hint.search">Search...</string>
     <string name="drag_drop"><![CDATA[Drag & Drop]]></string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
@@ -11,4 +12,6 @@
     <string name="previous_match">Previous match</string>
     <string name="next_match">Next match</string>
     <string name="search">Search</string>
+    <string name="menu">menu</string>
+    <string name="clear_search">Clear search</string>
 </resources>

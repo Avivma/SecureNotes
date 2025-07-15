@@ -67,14 +67,12 @@ class SearchHelper (
         matchPositions = emptyList()
         currentMatchIndex = 0
         currentQuery = ""
-
-        onMatchChanged(getMatchIndexText())
     }
 
     fun hasMatches(): Boolean = matchPositions.isNotEmpty()
 
     fun getMatchIndexText(): String {
-        return if (matchPositions.isEmpty()) "0/0"
+        return if (matchPositions.isEmpty()) ""
         else "${currentMatchIndex + 1}/${matchPositions.size}"
     }
 
