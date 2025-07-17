@@ -65,6 +65,8 @@ dependencies {
 
     implementation(libs.livedata)
 
+    implementation(libs.powermenu)
+
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
 }

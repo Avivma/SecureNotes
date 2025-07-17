@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainFragment_to_modifyNoteFragment"
             app:destination="@id/modifyNoteFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_searchDialogFragment"
+            app:destination="@id/searchDialogFragment" />
     </fragment>
 
     <fragment
@@ -24,6 +27,10 @@
             android:name="noteId"
             app:argType="integer"
             android:defaultValue="0" />
+        <argument
+            android:name="searchText"
+            app:argType="string"
+            android:defaultValue='' />
     </fragment>
 
     <fragment
@@ -43,4 +50,14 @@
         app:destination="@id/biometricFragment"
         app:popUpTo="@id/biometricFragment"
         />
+    <dialog
+        android:id="@+id/searchDialogFragment"
+        android:name="com.example.securenotes.shared.search.ui.SearchDialogFragment"
+        android:label="SearchDialogFragment"
+        tools:layout="@layout/fragment_search_dialog"
+        >
+        <action
+            android:id="@+id/action_searchDialogFragment_to_modifyNoteFragment"
+            app:destination="@id/modifyNoteFragment" />
+    </dialog>
 </navigation>

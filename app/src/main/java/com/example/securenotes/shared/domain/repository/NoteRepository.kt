@@ -10,4 +10,5 @@ interface NoteRepository {
     suspend fun insertNote(noteModel: NoteModel): Long
     suspend fun updateNote(noteModel: NoteModel): Int
     suspend fun deleteNote(id: Int): Int
+    suspend fun searchNotes(query: String): List<NoteModel>
 }

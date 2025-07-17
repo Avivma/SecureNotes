@@ -7,4 +7,7 @@ sealed class MainIntention {
     object AddNote : MainIntention()
     data class EditNote(val note: UiNote) : MainIntention()
     data class RemoveNote(val note: UiNote, val displayDialog: Boolean = false) : MainIntention()
+    // Simple intentions
+    object OpenMenu : MainIntention()
+    object OpenSearch : MainIntention()
 }

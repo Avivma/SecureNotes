@@ -52,7 +52,7 @@ class ModifyNoteViewModel @Inject constructor(
     fun action(intention: ModifyNoteIntention) {
         viewModelScope.launch(ioDispatcher) {
             when (intention) {
-                ModifyNoteIntention.FetchData -> fetchData()
+                is ModifyNoteIntention.FetchData -> fetchData(intention.searchText)
                 is ModifyNoteIntention.GotFocus -> gotFocus(intention.focusView)
                 ModifyNoteIntention.SaveNote -> saveNote()
                 ModifyNoteIntention.MinimizedPressed,
@@ -71,12 +71,15 @@ class ModifyNoteViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchData() {
+    private suspend fun fetchData(searchText: String) {
         if (isNoteIdValid(currentNoteId)) {
             try {
                 val note = getNoteUseCase(currentNoteId)
                 if (note != null) {
                     setData(note.title, note.content)
+                    if (searchText.isNotEmpty()) {
+                        _state.emit(ModifyNoteState.DisplaySearchBarWithQuery(searchText))
+                    }
                 } else {
                     _state.emit(ModifyNoteState.Error("Note not found"))
                 }

@@ -1,6 +1,7 @@
 package com.example.securenotes.shared.data
 
 import com.example.securenotes.shared.data.db.NoteDao
+import com.example.securenotes.shared.data.db.NoteEntity
 import com.example.securenotes.shared.data.model.NoteModelConverter
 import com.example.securenotes.shared.domain.model.NoteModel
 import com.example.securenotes.shared.domain.repository.NoteRepository
@@ -41,5 +42,11 @@ class NoteRepositoryImp @Inject constructor(
 
     override suspend fun deleteNote(id: Int): Int {
         return noteDao.deleteNote(id)
+    }
+
+    override suspend fun searchNotes(query: String): List<NoteModel> {
+        val notes: List<NoteEntity> = noteDao.searchNotes(query)
+        if (notes.isEmpty()) return emptyList()
+        return notes.map {NoteModelConverter.dbToDomain(it)}
     }
 }

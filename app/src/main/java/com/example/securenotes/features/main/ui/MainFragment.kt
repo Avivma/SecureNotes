@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.securenotes.MainActivity
+import com.example.securenotes.R
 import com.example.securenotes.core.di.MainDispatcher
 import com.example.securenotes.core.utils.L
 import com.example.securenotes.databinding.FragmentMainBinding
@@ -17,8 +18,12 @@ import com.example.securenotes.features.main.ui.model.UiNote
 import com.example.securenotes.features.main.ui.state.MainIntention
 import com.example.securenotes.features.main.ui.state.MainState
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
+import com.example.securenotes.shared.utils.dpToPx
 import com.example.securenotes.shared.utils.requireActivityTyped
 import com.google.android.material.snackbar.Snackbar
+import com.skydoves.powermenu.MenuAnimation
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -33,8 +38,11 @@ class MainFragment : Fragment() {
     private var mainAdapterManager = MainAdapterManager()
     private val adapter get() = mainAdapterManager.getAdapter()
 
-    @MainDispatcher
+    private var _moreMenu: PowerMenu? = null
+    private val moreMenu get() = _moreMenu!!
+
     @Inject
+    @MainDispatcher
     lateinit var mainDispatcher: CoroutineDispatcher
 
 
@@ -69,7 +77,7 @@ class MainFragment : Fragment() {
 
     private fun setListeners() {
         binding.fab.setOnClickListener {
-            viewModel.action(MainIntention.AddNote)
+            viewModel.action(MainIntention.OpenMenu)
         }
 
         // this work because observeStateLiveData reset the livedata each time. That way we don't collect previous clicks
@@ -96,6 +104,7 @@ class MainFragment : Fragment() {
             is MainState.DisplayRemoveQuestion -> showDeleteDialog(state.note)
             is MainState.NoteRemoved -> handleRemovedNoteState(state.title)
             is MainState.Error -> handleErrorState(state.message)
+            MainState.OpenMenu -> openMenu()
             else -> {
                 L.e("Unhandled state: $state")
                 throw IllegalStateException("Unhandled state: $state")
@@ -127,23 +136,60 @@ class MainFragment : Fragment() {
         Snackbar.make(requireView(), "An error occurred: ${message}", Snackbar.LENGTH_SHORT).show()
     }
 
+    private fun openMenu() {
+        val SEARCH = 0
+        val ADD_NOTE = 1
+        _moreMenu = PowerMenu.Builder(requireContext())
+            .addItem(
+                PowerMenuItem(
+                    title = resources.getString(R.string.search),
+                    iconRes = R.drawable.ic_search
+                )
+            )
+            .addItem(
+                PowerMenuItem(
+                    title = resources.getString(R.string.add_note),
+                    iconRes = R.drawable.ic_add
+                )
+            )
+            .setAnimation(MenuAnimation.ELASTIC_CENTER)
+            .setMenuRadius(8.dpToPx())
+            .setMenuShadow(6.dpToPx())
+            .setLifecycleOwner(viewLifecycleOwner)
+            .setOnMenuItemClickListener { position, item ->
+                moreMenu.dismiss()
+                when (position) {
+                    SEARCH -> viewModel.action(MainIntention.OpenSearch)
+                    ADD_NOTE -> viewModel.action(MainIntention.AddNote)
+                }
+            }
+            .build()
+        binding.fab.post {
+            moreMenu.showAsDropDown(binding.fab, -50, - (300 + binding.fab.height))
+        }
+    }
+
     private fun navigate(navigation: MainState.Navigation) {
         L.i("$TAG - navigate - navigation: $navigation")
-        if (navigation is MainState.Navigation.NavigateToModifyNote) {
-            val direction =
-                if (navigation.note == null) MainFragmentDirections.actionMainFragmentToModifyNoteFragment()
-                else MainFragmentDirections.actionMainFragmentToModifyNoteFragment(navigation.note.id)
-            lifecycleScope.launch(mainDispatcher) {
-                requireActivityTyped<MainActivity>().getNavController().navigate(direction)
+        lifecycleScope.launch(mainDispatcher) {
+            val direction = when (navigation) {
+                is MainState.Navigation.NavigateToModifyNote ->
+                    if (navigation.note == null)
+                        MainFragmentDirections.actionMainFragmentToModifyNoteFragment()
+                    else
+                        MainFragmentDirections.actionMainFragmentToModifyNoteFragment(navigation.note.id)
+                MainState.Navigation.NavigateToSearchDialog ->
+                    MainFragmentDirections.actionMainFragmentToSearchDialogFragment()
             }
-        } else
-            L.e("Unhandled navigation state: $navigation")
+            requireActivityTyped<MainActivity>().getNavController().navigate(direction)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         L.i("$TAG - onDestroyView")
         resetAdapter()
+        _moreMenu = null
         _binding = null
     }
 

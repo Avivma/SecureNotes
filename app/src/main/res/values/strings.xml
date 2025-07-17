@@ -2,6 +2,7 @@
     <string name="waiting_for_fingerprint">Waiting for fingerprint…</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="add_note">Add Note</string>
     <string name="hint.title">כותרת</string>
     <string name="hint.content">תוכן</string>
     <string name="hint.search">Search...</string>
@@ -14,4 +15,5 @@
     <string name="search">Search</string>
     <string name="menu">menu</string>
     <string name="clear_search">Clear search</string>
+    <string name="search_notes">Search Notes</string>
 </resources>

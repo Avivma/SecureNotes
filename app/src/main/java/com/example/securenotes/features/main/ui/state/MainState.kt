@@ -9,8 +9,10 @@ sealed class MainState() {
     data class DisplayRemoveQuestion(val note: UiNote): MainState()
     data class NoteRemoved(val title: String) : MainState()
     data class Error(val message: String): MainState()
+    object OpenMenu: MainState()
 
     sealed class Navigation: MainState() {
         data class NavigateToModifyNote(val note: UiNote? = null): MainState.Navigation()
+        object NavigateToSearchDialog: MainState.Navigation()
     }
 }

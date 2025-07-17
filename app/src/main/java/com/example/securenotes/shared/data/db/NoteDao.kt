@@ -35,4 +35,7 @@ interface NoteDao {
 
     @Query("DELETE FROM notes WHERE id = :noteId")
     suspend fun deleteNote(noteId: Int): Int
+
+    @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY lastModified DESC")
+    suspend fun searchNotes(query: String): List<NoteEntity>
 }

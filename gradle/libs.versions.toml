@@ -17,6 +17,7 @@ room = "2.5.2"
 crypto = "1.0.0"
 biometric = "1.1.0"
 livedata = "2.9.1"
+powermenu = "2.2.4"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -55,7 +56,11 @@ biometric = { module = "androidx.biometric:biometric", version.ref = "biometric"
 # LiveData
 livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "livedata" }
 
+# menu (powermenu) - https://github.com/skydoves/PowerMenu
+powermenu = { module = "com.github.skydoves:powermenu", version.ref = "powermenu" }
+
+
 [bundles]
-compose = [ "compose-ui", "compose-ui-tooling-preview", "material3" ]
-test = [ "junit" ]
-android-test = [ "androidx-junit", "espresso-core" ]
+compose = ["compose-ui", "compose-ui-tooling-preview", "material3"]
+test = ["junit"]
+android-test = ["androidx-junit", "espresso-core"]

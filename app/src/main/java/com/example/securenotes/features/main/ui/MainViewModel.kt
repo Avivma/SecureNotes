@@ -49,6 +49,8 @@ class MainViewModel @Inject constructor(
                 is MainIntention.RemoveNote -> removeNote(intention.note, intention.displayDialog)
                 is MainIntention.AddNote -> goToAddNoteScreen()
                 is MainIntention.EditNote -> goToEditNoteScreen(intention.note)
+                MainIntention.OpenMenu -> _state.postValue(MainState.OpenMenu)
+                MainIntention.OpenSearch -> goToSearchDialog()
             }
         }
     }
@@ -100,6 +102,10 @@ class MainViewModel @Inject constructor(
 
     private fun goToEditNoteScreen(note: UiNote) {
         _state.postValue(MainState.Navigation.NavigateToModifyNote(note))
+    }
+
+    private fun goToSearchDialog() {
+        _state.postValue(MainState.Navigation.NavigateToSearchDialog)
     }
 
     companion object {

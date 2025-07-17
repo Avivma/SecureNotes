@@ -31,6 +31,8 @@ import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManag
 import com.example.securenotes.shared.removenote.ui.RemoveNoteDisplay
 import com.example.securenotes.shared.search.SearchHelper
 import com.example.securenotes.shared.ui.DisplayToast
+import com.example.securenotes.shared.utils.animateGoneVisible
+import com.example.securenotes.shared.utils.animateInvisibleVisible
 import com.example.securenotes.shared.utils.requireActivityTyped
 import com.example.securenotes.shared.utils.slideDown
 import com.example.securenotes.shared.utils.slideUp
@@ -82,7 +84,7 @@ class ModifyNoteFragment : Fragment() {
             }
         }
 
-        viewModel.action(ModifyNoteIntention.FetchData)
+        viewModel.action(ModifyNoteIntention.FetchData(args.searchText))
     }
 
     private fun makeBottomButtonsBarAdjustableAboveKeyboard() {
@@ -140,9 +142,9 @@ class ModifyNoteFragment : Fragment() {
             if (matchText.isEmpty()) {
                 searchHelper.clearSearch()
                 displayToast("No matches found")
-                animateGoneVisible(binding.searchNavigationLayout, !SHOW)
+                binding.searchNavigationLayout.animateGoneVisible(!SHOW)
             } else {
-                animateGoneVisible(binding.searchNavigationLayout, SHOW)
+                binding.searchNavigationLayout.animateGoneVisible(SHOW)
             }
         }
 
@@ -174,11 +176,11 @@ class ModifyNoteFragment : Fragment() {
                 val hasText = !s.isNullOrBlank()
                 binding.searchHasText = hasText
 
-                animateInvisibleVisible(binding.clearSearchButton, hasText)
+                binding.clearSearchButton.animateInvisibleVisible(hasText)
 
                 if (!hasText) {
                     searchHelper.clearSearch()
-                    animateGoneVisible(binding.searchNavigationLayout, false)
+                    binding.searchNavigationLayout.animateGoneVisible(false)
                 }
             }
 
@@ -219,6 +221,7 @@ class ModifyNoteFragment : Fragment() {
             is ModifyNoteState.NoteRemoved -> displayRemove.showNoteRemovedMessage(state.title)
             ModifyNoteState.DisplayMenu -> createMenu()
             ModifyNoteState.DisplaySearchBar -> revealSearchBar()
+            is ModifyNoteState.DisplaySearchBarWithQuery -> revealSearchBarWithQuery(state.searchText)
 
             else -> {
                 L.e("Unhandled state: $state")
@@ -255,6 +258,12 @@ class ModifyNoteFragment : Fragment() {
         }
     }
 
+    private fun revealSearchBarWithQuery(searchText: String) {
+        binding.searchEditText.setText(searchText)
+        binding.searchContainer.slideDown()
+        searchHelper.performSearch(binding.searchEditText.text.toString())
+    }
+
     private fun navigate(navigation: ModifyNoteState.Navigation) {
         L.i("$TAG navigate called")
         if (navigation is ModifyNoteState.Navigation.NavigateBack){
@@ -263,35 +272,6 @@ class ModifyNoteFragment : Fragment() {
         }
         else
             L.e("Unhandled navigation state: $navigation")
-    }
-
-    private fun animateGoneVisible(view: View, show: Boolean) {
-        if (show && !view.isVisible) {
-            view.visibility = View.VISIBLE
-            view.animate()
-                .alpha(1f)
-                .setDuration(200)
-                .start()
-        } else if (!show && !view.isGone) {
-            view.animate()
-                .alpha(0f)
-                .setDuration(200)
-                .withEndAction {
-                    view.visibility = View.GONE
-                }
-                .start()
-        }
-    }
-
-    private fun animateInvisibleVisible(view: View, show: Boolean) {
-        if (show) {
-            view.visibility = View.VISIBLE
-            view.animate().alpha(1f).setDuration(200).start()
-        } else {
-            view.animate().alpha(0f).setDuration(200).withEndAction {
-                view.visibility = View.INVISIBLE
-            }.start()
-        }
     }
 
     override fun onStop() {
