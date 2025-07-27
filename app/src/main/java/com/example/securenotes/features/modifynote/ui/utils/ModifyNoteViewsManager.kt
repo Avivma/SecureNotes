@@ -108,10 +108,10 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
     }
 
     fun set(titleOrigin: String, contentOrigin: String, updatedAt: Long, createdAt: Long) {
-        title.set(titleOrigin)
-        content.set(contentOrigin)
         modifiedTimestamp = updatedAt
         createdTimestamp = createdAt
+        title.set(titleOrigin)
+        content.set(contentOrigin)
         modified.value = modifiedTimestamp.formatDateTime()
         created.value = createdTimestamp.formatDateTime()
     }

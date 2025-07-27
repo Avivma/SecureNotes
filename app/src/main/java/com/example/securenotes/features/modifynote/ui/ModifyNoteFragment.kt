@@ -88,7 +88,7 @@ class ModifyNoteFragment : Fragment() {
     }
 
     private fun makeBottomButtonsBarAdjustableAboveKeyboard() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomButtonBar) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.timeContainer) { view, insets ->
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             val imeHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
 
@@ -150,7 +150,7 @@ class ModifyNoteFragment : Fragment() {
 
         binding.cancelSearchButton.setOnClickListener {
             if (binding.searchContainer.isVisible) {
-                binding.searchContainer.slideUp(extraDp = 18)
+                binding.searchContainer.slideUp()
             }
         }
 
@@ -254,13 +254,13 @@ class ModifyNoteFragment : Fragment() {
 
     private fun revealSearchBar() {
         if (binding.searchContainer.isGone) {
-            binding.searchContainer.slideDown(extraDp = 18)
+            binding.searchContainer.slideDown()
         }
     }
 
     private fun revealSearchBarWithQuery(searchText: String) {
         binding.searchEditText.setText(searchText)
-        binding.searchContainer.slideDown(extraDp = 18)
+        binding.searchContainer.slideDown()
         searchHelper.performSearch(binding.searchEditText.text.toString())
     }
 

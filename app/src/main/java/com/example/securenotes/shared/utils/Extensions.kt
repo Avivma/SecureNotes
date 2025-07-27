@@ -32,10 +32,9 @@ private fun formatTimestampByPattern(timestamp: Long, pattern: String): String {
     return formatter.format(dateTime)
 }
 
-fun View.slideDown(duration: Long = 200, extraDp: Int = 0) {
+fun View.slideDown(duration: Long = 200) {
     if (isGone) {
-        val totalHeight = if (extraDp > 0) height + extraDp.dpToPx() else height // extraDp - Extra space to ensure the view is fully hidden
-        val animate = TranslateAnimation(0f, 0f, -totalHeight.toFloat(), 0f)
+        val animate = TranslateAnimation(0f, 0f, -height.toFloat(), 0f)
         animate.duration = duration
         animate.fillAfter = true
         visibility = View.VISIBLE
@@ -44,10 +43,9 @@ fun View.slideDown(duration: Long = 200, extraDp: Int = 0) {
     }
 }
 
-fun View.slideUp(duration: Long = 150, extraDp: Int = 0) {
+fun View.slideUp(duration: Long = 150) {
     if (isVisible) {
-        val totalHeight = if (extraDp > 0) height + extraDp.dpToPx() else height // extraDp - Extra space to ensure the view is fully hidden
-        val animate = TranslateAnimation(0f, 0f, 0f, -totalHeight.toFloat())
+        val animate = TranslateAnimation(0f, 0f, 0f, -height.toFloat())
         animate.duration = duration
         animate.fillAfter = true
         this.clearAnimation()

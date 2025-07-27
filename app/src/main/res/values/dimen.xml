@@ -16,7 +16,6 @@
     <dimen name="modify_icon_width">60dp</dimen>
     <dimen name="modify_menu_icon_width">40dp</dimen>
     <dimen name="modify_page.time">12sp</dimen>
-    <dimen name="modify_page.time_view_height">18dp</dimen>
 
     <!-- Biometric -->
     <dimen name="biometric_icon_size">60dp</dimen>

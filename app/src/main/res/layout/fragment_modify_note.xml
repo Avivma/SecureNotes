@@ -15,56 +15,13 @@
         android:layout_height="match_parent"
         android:focusableInTouchMode="true"
         android:layoutDirection="locale"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        >
 
-        <TextView
-            android:id="@+id/modifiedLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/modify_page.time_view_height"
-            android:text="@string/modify_page.modified_label"
-            android:textSize="@dimen/modify_page.time"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Modified At: " />
-        <TextView
-            android:id="@+id/modifiedTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/modify_page.time_view_height"
-            android:text='@{data.modified}'
-            android:textSize="@dimen/modify_page.time"
-            android:textStyle="bold"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-            app:layout_constraintStart_toEndOf="@id/modifiedLabel"
-            tools:text="2.6.23  3:12" />
-        <TextView
-            android:id="@+id/createdLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/modify_page.time_view_height"
-            android:text="@string/modify_page.created_label"
-            android:textSize="@dimen/modify_page.time"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-            app:layout_constraintEnd_toStartOf="@id/createdTextView"
-            tools:text="Created At: " />
-        <TextView
-            android:id="@+id/createdTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/modify_page.time_view_height"
-            android:text='@{data.created}'
-            android:textSize="@dimen/modify_page.time"
-            android:textStyle="bold"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?android:attr/textColorTertiary"
-            app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="1.6.23  8:04" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +29,7 @@
         android:layoutDirection="locale"
         android:padding="8dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/modifiedLabel"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"
         >
         <EditText
@@ -228,7 +185,8 @@
             android:id="@+id/bottomButtonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingBottom="6dp"
+            app:layout_constraintBottom_toTopOf="@id/timeContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
@@ -283,6 +241,70 @@
                 app:layout_constraintStart_toEndOf="@+id/btnUndo"
                 app:setAlpha="@{data.canRedo}"
                 app:tint="@color/icon_tint_color" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/timeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <View
+                android:id="@+id/timeBarrier"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/cardview_dark_background"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <TextView
+                android:id="@+id/modifiedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modify_page.modified_label"
+                android:textSize="@dimen/modify_page.time"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/timeBarrier"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Modified At: " />
+            <TextView
+                android:id="@+id/modifiedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{data.modified}'
+                android:textSize="@dimen/modify_page.time"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                app:layout_constraintStart_toEndOf="@id/modifiedLabel"
+                tools:text="2.6.23  3:12" />
+            <TextView
+                android:id="@+id/createdLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/modify_page.created_label"
+                android:textSize="@dimen/modify_page.time"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                app:layout_constraintEnd_toStartOf="@id/createdTextView"
+                tools:text="Created At: " />
+            <TextView
+                android:id="@+id/createdTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{data.created}'
+                android:textSize="@dimen/modify_page.time"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:attr/textColorTertiary"
+                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="1.6.23  8:04" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
