@@ -17,6 +17,7 @@ import com.example.securenotes.shared.removenote.domain.usecase.RemoveNoteUseCas
 import com.example.securenotes.shared.utils.Consts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -78,6 +79,7 @@ class ModifyNoteViewModel @Inject constructor(
                 if (note != null) {
                     setData(note.title, note.content)
                     if (searchText.isNotEmpty()) {
+                        delay(150) // I used this hack to avoid rise-condition with the search bar
                         _state.emit(ModifyNoteState.DisplaySearchBarWithQuery(searchText))
                     }
                 } else {
