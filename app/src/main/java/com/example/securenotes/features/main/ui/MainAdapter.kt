@@ -47,7 +47,7 @@ class MainAdapter(
     inner class NoteViewHolder(private val binding: NoteLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: UiNote) {
-            val noteView = NoteView(note.title, note.content)
+            val noteView = NoteView(note.title, note.content, note.lastModifiedTextShort)
             binding.noteView = noteView
             binding.rowLayout.setOnClickListener {
                 noteClicked(MainIntention.EditNote(note))
@@ -66,7 +66,7 @@ class MainAdapter(
         }
     }
 
-    data class NoteView(val title: String, val content: String)
+    data class NoteView(val title: String, val content: String, val time: String)
 
     companion object {
         private const val TAG = "MainAdapter"

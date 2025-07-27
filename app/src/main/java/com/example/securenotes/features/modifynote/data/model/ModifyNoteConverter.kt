@@ -10,7 +10,7 @@ object ModifyNoteConverter {
             title = note.title,
             content = note.content,
             updatedAt = note.updatedAt,
-            creationTime = System.currentTimeMillis()
+            creationTime = note.createdAt
         )
     }
 
@@ -19,7 +19,8 @@ object ModifyNoteConverter {
             id = noteModel.id,
             title = noteModel.title,
             content = noteModel.content,
-            updatedAt = noteModel.updatedAt
+            updatedAt = noteModel.updatedAt,
+            createdAt = noteModel.creationTime
         )
     }
 }

@@ -4,9 +4,11 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.securenotes.features.modifynote.domain.model.ModifyNoteModel
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus.ContentFocused
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus.TitleFocused
 import com.example.securenotes.shared.ui.UndoableField
+import com.example.securenotes.shared.utils.formatDateTime
 
 @MainThread
 class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "") {
@@ -15,14 +17,22 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
     private val isSaveEnabled: MediatorLiveData<Boolean> = MediatorLiveData(false)
     private val canRedo: MediatorLiveData<Boolean> = MediatorLiveData(false)
     private val canUndo: MediatorLiveData<Boolean> = MediatorLiveData(false)
+    private val modified: MutableLiveData<String> = MutableLiveData()
+    private val created: MutableLiveData<String> = MutableLiveData()
     private var focusView: ViewFocus? = null
+
+    private var modifiedTimestamp: Long = System.currentTimeMillis()
+    var createdTimestamp: Long = System.currentTimeMillis()
+        private set
 
     data class ViewData(
         val title: MutableLiveData<String>,
         val content: MutableLiveData<String>,
         val isSaveEnabled: LiveData<Boolean>,
         val canRedo: LiveData<Boolean>,
-        val canUndo: LiveData<Boolean>
+        val canUndo: LiveData<Boolean>,
+        val modified: LiveData<String>,
+        val created: LiveData<String>
     )
 
     fun getData(): ViewData {
@@ -31,7 +41,9 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
             content = content.current,
             isSaveEnabled = isSaveEnabled,
             canRedo = canRedo,
-            canUndo = canUndo
+            canUndo = canUndo,
+            modified = modified,
+            created = created
         )
     }
 
@@ -49,6 +61,8 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
             addSource(title.canUndo) { updateCanUndo(focusView) }
             addSource(content.canUndo) { updateCanUndo(focusView) }
         }
+        modified.value = modifiedTimestamp.formatDateTime()
+        created.value = createdTimestamp.formatDateTime()
     }
 
     private fun checkChanges() {
@@ -93,14 +107,23 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
         }
     }
 
-    fun set(titleOrigin: String, contentOrigin: String) {
+    fun set(titleOrigin: String, contentOrigin: String, updatedAt: Long, createdAt: Long) {
         title.set(titleOrigin)
         content.set(contentOrigin)
+        modifiedTimestamp = updatedAt
+        createdTimestamp = createdAt
+        modified.value = modifiedTimestamp.formatDateTime()
+        created.value = createdTimestamp.formatDateTime()
     }
 
     fun updateOrigin() {
         title.updateOrigin()
         content.updateOrigin()
+    }
+
+    fun updateModified(note: ModifyNoteModel) {
+        modifiedTimestamp = note.updatedAt
+        modified.value = modifiedTimestamp.formatDateTime()
     }
 
     sealed class ViewFocus {

@@ -5,4 +5,5 @@ data class ModifyNoteModel (
     val title: String,
     val content: String,
     val updatedAt: Long = System.currentTimeMillis(),
+    val createdAt: Long = System.currentTimeMillis()
 )

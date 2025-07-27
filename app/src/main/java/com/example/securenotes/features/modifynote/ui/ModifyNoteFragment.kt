@@ -150,7 +150,7 @@ class ModifyNoteFragment : Fragment() {
 
         binding.cancelSearchButton.setOnClickListener {
             if (binding.searchContainer.isVisible) {
-                binding.searchContainer.slideUp()
+                binding.searchContainer.slideUp(extraDp = 18)
             }
         }
 
@@ -254,13 +254,13 @@ class ModifyNoteFragment : Fragment() {
 
     private fun revealSearchBar() {
         if (binding.searchContainer.isGone) {
-            binding.searchContainer.slideDown()
+            binding.searchContainer.slideDown(extraDp = 18)
         }
     }
 
     private fun revealSearchBarWithQuery(searchText: String) {
         binding.searchEditText.setText(searchText)
-        binding.searchContainer.slideDown()
+        binding.searchContainer.slideDown(extraDp = 18)
         searchHelper.performSearch(binding.searchEditText.text.toString())
     }
 

@@ -6,13 +6,36 @@ import android.view.animation.TranslateAnimation
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 fun <T> Fragment.requireActivityTyped() = requireActivity() as T
 fun <K> Fragment.getApplication() = requireActivity().application as K
 
-fun View.slideDown(duration: Long = 200) {
+fun Long.formatDate(): String {
+    val PATTERN = "d.M.yy"
+    return formatTimestampByPattern(this, PATTERN)
+}
+
+fun Long.formatDateTime(): String {
+//    val PATTERN = "d.M.yy '::' H:mm"
+    val PATTERN = "d.M.yy  H:mm"
+    return formatTimestampByPattern(this, PATTERN)
+}
+
+private fun formatTimestampByPattern(timestamp: Long, pattern: String): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    val dateTime = Instant.ofEpochMilli(timestamp)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+    return formatter.format(dateTime)
+}
+
+fun View.slideDown(duration: Long = 200, extraDp: Int = 0) {
     if (isGone) {
-        val animate = TranslateAnimation(0f, 0f, -height.toFloat(), 0f)
+        val totalHeight = if (extraDp > 0) height + extraDp.dpToPx() else height // extraDp - Extra space to ensure the view is fully hidden
+        val animate = TranslateAnimation(0f, 0f, -totalHeight.toFloat(), 0f)
         animate.duration = duration
         animate.fillAfter = true
         visibility = View.VISIBLE
@@ -21,9 +44,10 @@ fun View.slideDown(duration: Long = 200) {
     }
 }
 
-fun View.slideUp(duration: Long = 150) {
+fun View.slideUp(duration: Long = 150, extraDp: Int = 0) {
     if (isVisible) {
-        val animate = TranslateAnimation(0f, 0f, 0f, -height.toFloat())
+        val totalHeight = if (extraDp > 0) height + extraDp.dpToPx() else height // extraDp - Extra space to ensure the view is fully hidden
+        val animate = TranslateAnimation(0f, 0f, 0f, -totalHeight.toFloat())
         animate.duration = duration
         animate.fillAfter = true
         this.clearAnimation()

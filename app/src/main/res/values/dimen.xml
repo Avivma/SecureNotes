@@ -4,17 +4,23 @@
     <dimen name="main_page_list_margin">12dp</dimen>
     <dimen name="rows_gap_margin">2dp</dimen>
     <dimen name="note_row_width_padding">12dp</dimen>
-    <dimen name="note_row_height_padding">12dp</dimen>
+    <dimen name="note_row_bottom_padding">4dp</dimen>
     <dimen name="note_row_icon_size">36dp</dimen>
     <dimen name="note_row_icon_margin">8dp</dimen>
     <dimen name="note_title">16sp</dimen>
     <dimen name="note_content">14sp</dimen>
+    <dimen name="main.time">12sp</dimen>
 
     <!-- Modify page -->
     <dimen name="modify_icon_height">36dp</dimen>
     <dimen name="modify_icon_width">60dp</dimen>
     <dimen name="modify_menu_icon_width">40dp</dimen>
+    <dimen name="modify_page.time">12sp</dimen>
+    <dimen name="modify_page.time_view_height">18dp</dimen>
 
-    <!-- biometric -->
+    <!-- Biometric -->
     <dimen name="biometric_icon_size">60dp</dimen>
+
+    <!-- Search -->
+    <dimen name="search.note_row_height_padding">12dp</dimen>
 </resources>

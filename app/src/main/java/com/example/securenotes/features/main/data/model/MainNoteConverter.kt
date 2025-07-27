@@ -19,7 +19,8 @@ object MainNoteConverter {
         return MainNote(
             id = noteModel.id,
             title = noteModel.title,
-            content = noteModel.content
+            content = noteModel.content,
+            lastModified = noteModel.updatedAt
         )
     }
 }

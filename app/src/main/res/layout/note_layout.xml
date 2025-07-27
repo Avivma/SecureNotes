@@ -20,11 +20,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:paddingStart="@dimen/note_row_width_padding"
             android:paddingEnd="@dimen/note_row_width_padding"
-            android:paddingTop="@dimen/note_row_height_padding"
-            android:paddingBottom="@dimen/note_row_height_padding"
+            android:paddingBottom="@dimen/note_row_bottom_padding"
             >
 
             <ImageButton
@@ -60,12 +59,23 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/note_title"
                 android:layout_marginEnd="@dimen/note_row_icon_margin"
+                android:paddingBottom="6dp"
                 tools:text="Note Title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/buttonDelete"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0"
+                />
+            <TextView
+                android:id="@+id/modifiedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{noteView.time}"
+                android:textSize="@dimen/main.time"
+                tools:text="12.7.25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

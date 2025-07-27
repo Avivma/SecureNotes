@@ -75,9 +75,9 @@ class ModifyNoteViewModel @Inject constructor(
     private suspend fun fetchData(searchText: String) {
         if (isNoteIdValid(currentNoteId)) {
             try {
-                val note = getNoteUseCase(currentNoteId)
+                val note: ModifyNoteModel? = getNoteUseCase(currentNoteId)
                 if (note != null) {
-                    setData(note.title, note.content)
+                    setData(note.title, note.content, note.updatedAt, note.createdAt)
                     if (searchText.isNotEmpty()) {
                         delay(150) // I used this hack to avoid rise-condition with the search bar
                         _state.emit(ModifyNoteState.DisplaySearchBarWithQuery(searchText))
@@ -98,7 +98,7 @@ class ModifyNoteViewModel @Inject constructor(
     }
 
     private suspend fun saveNote() {
-        val note: ModifyNoteModel = getModelWithCurrentData()
+        var note: ModifyNoteModel = getModelWithCurrentData()
         if (justBeenDeleted) {
             L.i("saveNote - Note has just been deleted - DO NOT SAVE. Current note = $note")
             return
@@ -109,7 +109,7 @@ class ModifyNoteViewModel @Inject constructor(
             if (isNoteIdValid(resultedNoteId)) {
                 L.i("saveNote - save note = $note")
                 currentNoteId = resultedNoteId
-                updateData()
+                updateData(note)
                 _state.emit(ModifyNoteState.NoteSaved)
             } else {
                 L.i("Error saving note. Latest noteId = ${currentNoteId}")
@@ -178,17 +178,20 @@ class ModifyNoteViewModel @Inject constructor(
         id = currentNoteId,
         title = data.title.value.orEmpty(),
         content = data.content.value.orEmpty(),
+        updatedAt = System.currentTimeMillis(),
+        createdAt = viewsManager.createdTimestamp
     )
 
-    private suspend fun updateData() {
+    private suspend fun updateData(note: ModifyNoteModel) {
         withContext(mainDispatcher) {
             viewsManager.updateOrigin()
+            viewsManager.updateModified(note)
         }
     }
 
-    private suspend fun setData(title: String, content: String) {
+    private suspend fun setData(title: String, content: String, updatedAt: Long, createdAt: Long) {
         withContext(mainDispatcher) {
-            viewsManager.set(title, content)
+            viewsManager.set(title, content, updatedAt, createdAt)
         }
     }
 
