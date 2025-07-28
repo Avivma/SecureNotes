@@ -34,8 +34,10 @@ import com.example.securenotes.shared.ui.DisplayToast
 import com.example.securenotes.shared.utils.animateGoneVisible
 import com.example.securenotes.shared.utils.animateInvisibleVisible
 import com.example.securenotes.shared.utils.requireActivityTyped
+import com.example.securenotes.shared.utils.setOnMotionEventListener
 import com.example.securenotes.shared.utils.slideDown
 import com.example.securenotes.shared.utils.slideUp
+import com.example.securenotes.shared.utils.textChangedListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -109,12 +111,12 @@ class ModifyNoteFragment : Fragment() {
             viewModel.action(ModifyNoteIntention.SaveNote)
         }
 
-        binding.btnUndo.setOnClickListener {
-            viewModel.action(ModifyNoteIntention.Undo)
+        binding.textTitle.textChangedListener {
+            viewModel.action(ModifyNoteIntention.TitleChanged(it))
         }
 
-        binding.btnRedo.setOnClickListener {
-            viewModel.action(ModifyNoteIntention.Redo)
+        binding.textContent.textChangedListener {
+            viewModel.action(ModifyNoteIntention.ContentChanged(it))
         }
 
         binding.textTitle.setOnFocusChangeListener { v, hasFocus ->
@@ -128,6 +130,16 @@ class ModifyNoteFragment : Fragment() {
                 viewModel.action(ModifyNoteIntention.GotFocus(ViewFocus.ContentFocused))
             }
         }
+
+        binding.btnUndo.setOnMotionEventListener(
+            motionDown = { viewModel.action(ModifyNoteIntention.UndoContinuously) },
+            motionUp = { viewModel.action(ModifyNoteIntention.UndoStop) }
+        )
+
+        binding.btnRedo.setOnMotionEventListener(
+            motionDown = { viewModel.action(ModifyNoteIntention.RedoContinuously) },
+            motionUp = { viewModel.action(ModifyNoteIntention.RedoStop) }
+        )
 
         setSearchListener()
         setBackPressedListener()

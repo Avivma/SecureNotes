@@ -1,8 +1,12 @@
 package com.example.securenotes.shared.utils
 
 import android.content.res.Resources
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.TranslateAnimation
+import android.widget.EditText
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -86,3 +90,39 @@ fun View.animateGoneVisible(show: Boolean) {
 
 fun Int.dpToPx(): Float =
     (this * Resources.getSystem().displayMetrics.density)
+
+
+fun View.setOnMotionEventListener(
+    motionDown: () -> Unit,
+    motionUp: () -> Unit
+) {
+    setOnTouchListener { _, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                motionDown()
+                true
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                motionUp()
+                true
+            }
+
+            else -> false
+        }
+    }
+
+}
+
+fun EditText.textChangedListener(
+    afterTextChanged: (String) -> Unit
+) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            afterTextChanged(s?.toString() ?: "")
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    })
+}

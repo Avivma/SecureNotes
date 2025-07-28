@@ -12,8 +12,8 @@ import com.example.securenotes.shared.utils.formatDateTime
 
 @MainThread
 class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "") {
-    private val title = UndoableField(titleOrigin)
-    private val content = UndoableField(contentOrigin)
+    val title = UndoableField(titleOrigin)
+    val content = UndoableField(contentOrigin)
     private val isSaveEnabled: MediatorLiveData<Boolean> = MediatorLiveData(false)
     private val canRedo: MediatorLiveData<Boolean> = MediatorLiveData(false)
     private val canUndo: MediatorLiveData<Boolean> = MediatorLiveData(false)
@@ -26,8 +26,8 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
         private set
 
     data class ViewData(
-        val title: MutableLiveData<String>,
-        val content: MutableLiveData<String>,
+        val title: LiveData<String>,
+        val content: LiveData<String>,
         val isSaveEnabled: LiveData<Boolean>,
         val canRedo: LiveData<Boolean>,
         val canUndo: LiveData<Boolean>,

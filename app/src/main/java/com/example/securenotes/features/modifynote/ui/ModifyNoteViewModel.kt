@@ -10,6 +10,7 @@ import com.example.securenotes.features.modifynote.domain.usecase.GetNoteUseCase
 import com.example.securenotes.features.modifynote.domain.usecase.SaveNoteUseCase
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteIntention
 import com.example.securenotes.features.modifynote.ui.state.ModifyNoteState
+import com.example.securenotes.features.modifynote.ui.utils.ContinuousButtonOperationManager
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewData
 import com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewFocus
@@ -44,10 +45,15 @@ class ModifyNoteViewModel @Inject constructor(
     private var justBeenDeleted = false
     private var currentNoteId: Int = Consts.NO_ID
 
+    private lateinit var continuousUndoManager: ContinuousButtonOperationManager
+    private lateinit var continuousRedoManager: ContinuousButtonOperationManager
+
     fun init(noteId: Int) {
         this.currentNoteId = noteId
         this.data = viewsManager.getData()
         this.justBeenDeleted = false
+        this.continuousUndoManager = ContinuousButtonOperationManager(scope = viewModelScope, continuouslyAdditionCondition = data.canUndo)
+        this.continuousRedoManager = ContinuousButtonOperationManager(scope = viewModelScope, continuouslyAdditionCondition = data.canRedo)
     }
 
     fun action(intention: ModifyNoteIntention) {
@@ -55,6 +61,8 @@ class ModifyNoteViewModel @Inject constructor(
             when (intention) {
                 is ModifyNoteIntention.FetchData -> fetchData(intention.searchText)
                 is ModifyNoteIntention.GotFocus -> gotFocus(intention.focusView)
+                is ModifyNoteIntention.TitleChanged -> titleChanged(intention.text)
+                is ModifyNoteIntention.ContentChanged -> contentChanged(intention.text)
                 ModifyNoteIntention.SaveNote -> saveNote()
                 ModifyNoteIntention.MinimizedPressed,
                 ModifyNoteIntention.BackPressed -> backPressed()
@@ -64,11 +72,27 @@ class ModifyNoteViewModel @Inject constructor(
                     intention.displayDialog
                 )
 
-                ModifyNoteIntention.Redo -> redo()
                 ModifyNoteIntention.Undo -> undo()
+                ModifyNoteIntention.UndoContinuously -> undoContinuously()
+                ModifyNoteIntention.UndoStop -> undoStop()
+                ModifyNoteIntention.Redo -> redo()
+                ModifyNoteIntention.RedoContinuously -> redoContinuously()
+                ModifyNoteIntention.RedoStop -> redoStop()
                 ModifyNoteIntention.OpenMenu -> openMenu()
                 ModifyNoteIntention.RevealSearch -> revealSearch()
             }
+        }
+    }
+
+    private suspend fun titleChanged(text: String) {
+        withContext(mainDispatcher) {
+            viewsManager.title.update(text)
+        }
+    }
+
+    private suspend fun contentChanged(text: String) {
+        withContext(mainDispatcher) {
+            viewsManager.content.update(text)
         }
     }
 
@@ -161,6 +185,26 @@ class ModifyNoteViewModel @Inject constructor(
         withContext(mainDispatcher) {
             viewsManager.redo()
         }
+    }
+
+    private fun undoContinuously() {
+        continuousUndoManager.start {
+            viewsManager.undo()
+        }
+    }
+
+    private fun undoStop() {
+        continuousUndoManager.stop()
+    }
+
+    private fun redoContinuously() {
+        continuousRedoManager.start {
+            viewsManager.redo()
+        }
+    }
+
+    private fun redoStop() {
+        continuousRedoManager.stop()
     }
 
     private suspend fun openMenu() {

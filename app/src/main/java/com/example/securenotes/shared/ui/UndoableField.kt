@@ -4,12 +4,14 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.securenotes.core.utils.L
 
 @MainThread
 class UndoableField<T>(initialValue: T) {
-    val current: MutableLiveData<T> = MutableLiveData(initialValue)
+    private val _current: MutableLiveData<T> = MutableLiveData(initialValue)
+    val current: LiveData<T> get() = _current
+
     private var originValue: T = initialValue
-    private var previousValue: T = initialValue
 
     private val undoStack = ArrayDeque<T>()
     private val redoStack = ArrayDeque<T>()
@@ -23,48 +25,47 @@ class UndoableField<T>(initialValue: T) {
     val hasChanged: MediatorLiveData<Boolean> = MediatorLiveData()
 
     init {
-        hasChanged.addSource(current) {
+        hasChanged.addSource(_current) {
             checkChange()
-            update()
         }
         hasChanged.value = false
         _canUndo.value = false
         _canRedo.value = false
     }
 
-    private fun update() {
-        val oldValue = previousValue
-        if (oldValue != current.value) {
+    fun update(newValue: T) {
+        val oldValue = _current.value
+        if (oldValue != newValue) {
+            L.i("$TAG - update() - oldValue($oldValue) != current.value(${_current.value})")
             undoStack.addLast(oldValue!!)
+            _current.value = newValue
             redoStack.clear()
             updateFlags()
-            previousValue = current.value!!
         }
     }
 
     fun undo() {
         if (undoStack.isNotEmpty()) {
-            val currentValue = current.value!!
+            L.i("$TAG - undo() - not empty")
+            val currentValue = _current.value!!
             redoStack.addLast(currentValue)
             val updatedValue = undoStack.removeLast()
-            previousValue = updatedValue
             updateFlags()
-            current.value = updatedValue
+            _current.value = updatedValue
         }
     }
 
     fun redo() {
         if (redoStack.isNotEmpty()) {
-            val currentValue = current.value!!
+            val currentValue = _current.value!!
             undoStack.addLast(currentValue)
             val updatedValue = redoStack.removeLast()
-            previousValue = updatedValue
             updateFlags()
-            current.value = updatedValue
+            _current.value = updatedValue
         }
     }
 
-    fun get(): T = current.value!!
+    fun get(): T = _current.value!!
 
     private fun updateFlags() {
         _canUndo.value = undoStack.isNotEmpty()
@@ -72,21 +73,24 @@ class UndoableField<T>(initialValue: T) {
     }
 
     private fun checkChange() {
-        hasChanged.value = current.value != originValue
+        hasChanged.value = _current.value != originValue
     }
 
     fun set(newOrigin: T) {
         undoStack.clear()
         redoStack.clear()
         originValue = newOrigin
-        previousValue = newOrigin
         hasChanged.value = false
         updateFlags()
-        current.value = newOrigin
+        _current.value = newOrigin
     }
 
     fun updateOrigin() {
-        originValue = current.value!!
+        originValue = _current.value!!
         hasChanged.value = false
+    }
+
+    companion object {
+        private const val TAG = "UndoableField"
     }
 }
