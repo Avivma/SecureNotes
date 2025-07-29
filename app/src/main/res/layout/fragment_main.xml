@@ -10,7 +10,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_fragment_final"
+        >
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -46,6 +48,8 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="?attr/colorPrimary"
+            app:elevation="8dp"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

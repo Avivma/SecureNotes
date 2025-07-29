@@ -16,6 +16,6 @@
     <string name="menu">menu</string>
     <string name="clear_search">Clear search</string>
     <string name="search_notes">Search Notes</string>
-    <string name="modify_page.modified_label">Modified: </string>
-    <string name="modify_page.created_label">Created: </string>
+    <string name="modify_page.modified_label">Modified:</string>
+    <string name="modify_page.created_label">Created:</string>
 </resources>

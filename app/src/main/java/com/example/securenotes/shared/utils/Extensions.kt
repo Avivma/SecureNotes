@@ -24,7 +24,7 @@ fun Long.formatDate(): String {
 
 fun Long.formatDateTime(): String {
 //    val PATTERN = "d.M.yy '::' H:mm"
-    val PATTERN = "d.M.yy  H:mm"
+    val PATTERN = "d.M.yy, H:mm"
     return formatTimestampByPattern(this, PATTERN)
 }
 

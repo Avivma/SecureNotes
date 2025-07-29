@@ -9,74 +9,93 @@
             type="com.example.securenotes.features.main.ui.MainAdapter.NoteView" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/rowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/rows_gap_margin"
-        android:elevation="4dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:strokeColor="@android:color/white"
+        app:strokeWidth="0.5dp"
+        >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:paddingStart="@dimen/note_row_width_padding"
-            android:paddingEnd="@dimen/note_row_width_padding"
-            android:paddingBottom="@dimen/note_row_bottom_padding"
-            >
+            android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/buttonDragHandle"
-                android:layout_width="@dimen/note_row_icon_size"
-                android:layout_height="@dimen/note_row_icon_size"
-                android:src="@drawable/ic_drag_handle"
-                android:contentDescription="@string/drag_drop"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/icon_tint_color"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_card_gradient"/>
 
-            <ImageButton
-                android:id="@+id/buttonDelete"
-                android:layout_width="@dimen/note_row_icon_size"
-                android:layout_height="0dp"
-                android:src="@drawable/ic_delete"
-                android:contentDescription="@string/delete"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_marginEnd="@dimen/note_row_icon_margin"
-                app:tint="@color/icon_tint_color"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/buttonDragHandle" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingStart="@dimen/note_row_width_padding"
+                android:paddingEnd="@dimen/note_row_width_padding"
+                android:paddingBottom="@dimen/note_row_bottom_padding"
+                >
 
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@{noteView.title}"
-                android:textStyle="bold"
-                android:textSize="@dimen/note_title"
-                android:layout_marginEnd="@dimen/note_row_icon_margin"
-                android:paddingBottom="6dp"
-                tools:text="Note Title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/buttonDelete"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                />
-            <TextView
-                android:id="@+id/modifiedText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{noteView.time}"
-                android:textSize="@dimen/main.time"
-                tools:text="12.7.25"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/buttonDragHandle"
+                    android:layout_width="@dimen/note_row_icon_size"
+                    android:layout_height="@dimen/note_row_icon_size"
+                    android:src="@drawable/ic_drag_handle"
+                    android:contentDescription="@string/drag_drop"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/icon_tint_color"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/buttonDelete"
+                    android:layout_width="@dimen/note_row_icon_size"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_dark_delete"
+                    android:contentDescription="@string/delete"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="@dimen/note_row_icon_margin"
+                    app:tint="@color/icon_tint_color"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/buttonDragHandle" />
+
+                <TextView
+                    android:id="@+id/titleText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{noteView.title}"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/note_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:layout_marginEnd="@dimen/note_row_icon_margin"
+                    android:paddingBottom="6dp"
+                    tools:text="Note Title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonDelete"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    />
+                <TextView
+                    android:id="@+id/modifiedText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{noteView.time}"
+                    android:textSize="@dimen/main.time"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="12.7.25"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

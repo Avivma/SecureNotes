@@ -10,186 +10,257 @@
             type="com.example.securenotes.features.modifynote.ui.utils.ModifyNoteViewsManager.ViewData" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_notebook_dark"
         android:focusableInTouchMode="true"
         android:layoutDirection="locale"
+        android:orientation="vertical"
         android:paddingTop="16dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         >
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/search_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusableInTouchMode="true"
-        android:layoutDirection="locale"
-        android:padding="8dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        >
-        <EditText
-            android:id="@+id/searchEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint.search"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:paddingEnd="36dp"
-            android:background="@drawable/search_edit_text_background"
-            android:padding="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/searchButtonContainer"
-            />
-
-        <ImageButton
-            android:id="@+id/clearSearchButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="6dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_clear_text"
-            android:contentDescription="@string/clear_search"
-            android:visibility="invisible"
-            android:alpha="0"
-            app:layout_constraintEnd_toEndOf="@id/searchEditText"
-            app:layout_constraintTop_toTopOf="@id/searchEditText"
-            app:layout_constraintBottom_toBottomOf="@id/searchEditText"
-            />
-
-        <FrameLayout
-            android:id="@+id/searchButtonContainer"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/searchEditText"
-            app:layout_constraintBottom_toBottomOf="@id/searchEditText"
-            >
-            <ImageView
-                android:id="@+id/searchButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_search"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/search"
-                android:padding="4dp"
-                android:visibility="@{searchHasText ? View.VISIBLE : View.GONE, default=gone}"
-                />
-            <ImageView
-                android:id="@+id/cancelSearchButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_cancel"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/cancel_search"
-                android:padding="4dp"
-                android:visibility="@{searchHasText ? View.GONE : View.VISIBLE, default=visible}"
-                />
-        </FrameLayout>
-
-        <LinearLayout
-            android:id="@+id/searchNavigationLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingTop="4dp"
-            android:visibility="gone"
-            android:alpha="0"
-            app:layout_constraintTop_toBottomOf="@+id/searchEditText"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageButton
-                android:id="@+id/searchPrevButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/previous_match"
-                android:src="@drawable/ic_previous"
-                android:background="?attr/selectableItemBackgroundBorderless" />
-
-            <TextView
-                android:id="@+id/searchMatchCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="12dp"
-                android:textSize="@dimen/note_content"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                tools:text="1 / 4"/>
-
-            <ImageButton
-                android:id="@+id/searchNextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/next_match"
-                android:src="@drawable/ic_next"
-                android:background="?attr/selectableItemBackgroundBorderless" />
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollContainer"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:fillViewport="true"
-            android:overScrollMode="never"
-            app:layout_constraintTop_toBottomOf="@+id/search_container"
-            app:layout_constraintBottom_toTopOf="@+id/bottomButtonBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_weight="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             >
+
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/search_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:layoutDirection="locale"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible"
                 >
                 <EditText
-                    android:id="@+id/textTitle"
+                    android:id="@+id/searchEditText"
+                    style="@style/Widget.MyApp.SearchView.Light"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="top|start"
-                    android:hint="@string/hint.title"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:text="@{data.title}"
-                    android:textDirection="rtl"
-                    android:textSize="@dimen/note_title"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:hint="@string/hint.search"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingEnd="36dp"
+                    android:background="@drawable/search_edit_text_background"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="הכותרת שלי" />
-
-                <EditText
-                    android:id="@+id/textContent"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:gravity="top|start"
-                    android:hint="@string/hint.content"
-                    android:inputType="textMultiLine"
-                    android:text="@{data.content}"
-                    android:textDirection="rtl"
-                    android:textSize="@dimen/note_content"
-                    app:layout_constraintTop_toBottomOf="@id/textTitle"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="תוכן ההערה שלי"
+                    app:layout_constraintEnd_toStartOf="@id/searchButtonContainer"
                     />
+
+                <ImageButton
+                    android:id="@+id/clearSearchButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_clear_text"
+                    android:contentDescription="@string/clear_search"
+                    android:visibility="invisible"
+                    android:alpha="0"
+                    app:layout_constraintEnd_toEndOf="@id/searchEditText"
+                    app:layout_constraintTop_toTopOf="@id/searchEditText"
+                    app:layout_constraintBottom_toBottomOf="@id/searchEditText"
+                    />
+
+                <FrameLayout
+                    android:id="@+id/searchButtonContainer"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/searchEditText"
+                    app:layout_constraintBottom_toBottomOf="@id/searchEditText"
+                    >
+                    <ImageView
+                        android:id="@+id/searchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_dark_search"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/search"
+                        android:padding="4dp"
+                        android:visibility="@{searchHasText ? View.VISIBLE : View.GONE, default=gone}"
+                        />
+                    <ImageView
+                        android:id="@+id/cancelSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_dark_cancel"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/cancel_search"
+                        android:padding="4dp"
+                        android:visibility="@{searchHasText ? View.GONE : View.VISIBLE, default=visible}"
+                        />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/searchNavigationLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="4dp"
+                    android:visibility="gone"
+                    android:alpha="0"
+                    app:layout_constraintTop_toBottomOf="@+id/searchEditText"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageButton
+                        android:id="@+id/searchPrevButton"
+                        android:layout_width="@dimen/modify_menu_icon_width"
+                        android:layout_height="@dimen/modify_icon_height"
+                        android:contentDescription="@string/previous_match"
+                        android:src="@drawable/ic_previous"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+
+                    <TextView
+                        android:id="@+id/searchMatchCounter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="12dp"
+                        android:textSize="@dimen/note_content"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        tools:text="1 / 4"/>
+
+                    <ImageButton
+                        android:id="@+id/searchNextButton"
+                        android:layout_width="@dimen/modify_menu_icon_width"
+                        android:layout_height="@dimen/modify_icon_height"
+                        android:contentDescription="@string/next_match"
+                        android:src="@drawable/ic_next"
+                        android:background="?attr/selectableItemBackgroundBorderless" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                app:layout_constraintTop_toBottomOf="@+id/search_container"
+                app:layout_constraintBottom_toTopOf="@+id/timeContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <EditText
+                        android:id="@+id/textTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:hint="@string/hint.title"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:text="@{data.title}"
+                        android:textDirection="rtl"
+                        android:textSize="@dimen/modify_note_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="הכותרת שלי" />
+
+                    <com.example.securenotes.shared.widgets.LinedEditText
+                        android:id="@+id/textContent"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:gravity="top|start"
+                        android:hint="@string/hint.content"
+                        android:inputType="textMultiLine"
+                        android:text="@{data.content}"
+                        android:textDirection="rtl"
+                        android:textSize="@dimen/modify_note_content"
+                        app:layout_constraintTop_toBottomOf="@id/textTitle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="תוכן ההערה שלי"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/timeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+                <View
+                    android:id="@+id/timeBarrier"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/cardview_dark_background"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/modifiedLabel"
+                    style="@style/ModifyTimeBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modify_page.modified_label"
+                    app:layout_constraintTop_toBottomOf="@+id/timeBarrier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="Modified:" />
+                <TextView
+                    android:id="@+id/modifiedTextView"
+                    style="@style/ModifyTimeBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{data.modified}'
+                    android:textStyle="bold"
+                    android:layout_marginStart="6dp"
+                    app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                    app:layout_constraintStart_toEndOf="@id/modifiedLabel"
+                    tools:text="2.6.23, 3:12" />
+                <TextView
+                    android:id="@+id/createdLabel"
+                    style="@style/ModifyTimeBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/modify_page.created_label"
+                    android:layout_marginEnd="6dp"
+                    app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                    app:layout_constraintEnd_toStartOf="@id/createdTextView"
+                    tools:text="Created:" />
+                <TextView
+                    android:id="@+id/createdTextView"
+                    style="@style/ModifyTimeBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{data.created}'
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/modifiedLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="1.6.23, 8:04" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomButtonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="6dp"
             android:paddingBottom="6dp"
-            app:layout_constraintBottom_toTopOf="@id/timeContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/off_white"
             >
+<!--            android:background="@drawable/bg_bottom_bar"-->
+<!--            android:background="@color/off_white"-->
             <ImageButton
                 android:id="@+id/menuButton"
                 android:layout_width="@dimen/modify_menu_icon_width"
@@ -242,69 +313,5 @@
                 app:setAlpha="@{data.canRedo}"
                 app:tint="@color/icon_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/timeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
-            <View
-                android:id="@+id/timeBarrier"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/cardview_dark_background"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-            <TextView
-                android:id="@+id/modifiedLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/modify_page.modified_label"
-                android:textSize="@dimen/modify_page.time"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textColor="?android:attr/textColorSecondary"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@+id/timeBarrier"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="Modified At: " />
-            <TextView
-                android:id="@+id/modifiedTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{data.modified}'
-                android:textSize="@dimen/modify_page.time"
-                android:textStyle="bold"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?android:attr/textColorSecondary"
-                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-                app:layout_constraintStart_toEndOf="@id/modifiedLabel"
-                tools:text="2.6.23  3:12" />
-            <TextView
-                android:id="@+id/createdLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/modify_page.created_label"
-                android:textSize="@dimen/modify_page.time"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?android:attr/textColorSecondary"
-                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-                app:layout_constraintEnd_toStartOf="@id/createdTextView"
-                tools:text="Created At: " />
-            <TextView
-                android:id="@+id/createdTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{data.created}'
-                android:textSize="@dimen/modify_page.time"
-                android:textStyle="bold"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?android:attr/textColorTertiary"
-                app:layout_constraintTop_toTopOf="@id/modifiedLabel"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="1.6.23  8:04" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

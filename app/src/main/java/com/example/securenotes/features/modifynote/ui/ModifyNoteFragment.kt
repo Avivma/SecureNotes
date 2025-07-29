@@ -90,7 +90,7 @@ class ModifyNoteFragment : Fragment() {
     }
 
     private fun makeBottomButtonsBarAdjustableAboveKeyboard() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.timeContainer) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomButtonBar) { view, insets ->
             val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
             val imeHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
 
@@ -209,7 +209,6 @@ class ModifyNoteFragment : Fragment() {
                 false
             }
         }
-
     }
 
     private fun setBackPressedListener() {

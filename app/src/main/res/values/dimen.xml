@@ -12,6 +12,8 @@
     <dimen name="main.time">12sp</dimen>
 
     <!-- Modify page -->
+    <dimen name="modify_note_title">18sp</dimen>
+    <dimen name="modify_note_content">18sp</dimen>
     <dimen name="modify_icon_height">36dp</dimen>
     <dimen name="modify_icon_width">60dp</dimen>
     <dimen name="modify_menu_icon_width">40dp</dimen>
@@ -22,4 +24,5 @@
 
     <!-- Search -->
     <dimen name="search.note_row_height_padding">12dp</dimen>
+    <dimen name="search.text">16dp</dimen>
 </resources>

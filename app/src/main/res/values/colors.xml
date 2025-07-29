@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- General Colors -->
-    <color name="icon_color">@color/cardview_dark_background</color>
+    <color name="icon_light_mode_color">@color/cardview_dark_background</color>
+    <color name="icon_light_mode_color_extra_contrast">@color/light_mode_color_extra_contrast</color>
+    <color name="icon_dark_mode_color">#B3FFFFFF</color>
     <color name="icon_tint_color">@color/cardview_dark_background</color>
+    <color name="white">#FFFFFF</color>
+    <color name="off_white">#B3FFFFFF</color>
+    <color name="light_mode_color_extra_contrast">#323232</color>
+
+    <!-- modify -->
+    <color name="modify.background">#444455</color>
+<!--    <color name="modify.background">#47475F</color>-->
 
     <!-- search -->
     <color name="search_current_match_highlight">#FFB34F</color>
 <!--    #FFFF00-->
 <!--    #FFD54F-->
     <color name="search_other_match_highlight">#9BFFE100</color>
+    <color name="search_bar_background">#E0E0E0</color>
+    <color name="search_bar_stroke">#B0B0B0</color>
+    <color name="search_bar_text">#424242</color>
+    <color name="search_bar_hint">#B3424242</color> <!-- 70% opacity white -->
 </resources>

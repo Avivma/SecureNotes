@@ -1,0 +1,23 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base: dark gradient background -->
+    <item android:drawable="@drawable/bg_gradient" />
+
+    <!-- Color overlay: subtle jewel-tone gradient -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:endColor="#303056"
+                android:startColor="#222238" />
+        </shape>
+    </item>
+
+    <!-- Optional: tiled curvy line texture on top -->
+    <item
+        android:alpha="50"
+        android:bottom="0dp"
+        android:drawable="@drawable/curvy_line_texture"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp" />
+</layer-list>

@@ -40,6 +40,7 @@
             >
             <EditText
                 android:id="@+id/searchEditText"
+                style="@style/Widget.MyApp.SearchView.Light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint.search"
@@ -53,7 +54,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/searchButtonContainer"
                 />
-<!--            android:text="@={model.searchText}"-->
 
             <ImageButton
                 android:id="@+id/clearSearchButton"
@@ -83,7 +83,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_dark_search"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/search"
                     android:padding="4dp"

@@ -5,7 +5,8 @@
         android:allowBackup="true"
         android:label="Secure Notes"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/AppTheme"
+        >
 
         <activity
             android:name="com.example.securenotes.MainActivity"

@@ -143,7 +143,7 @@ class MainFragment : Fragment() {
             .addItem(
                 PowerMenuItem(
                     title = resources.getString(R.string.search),
-                    iconRes = R.drawable.ic_search
+                    iconRes = R.drawable.ic_light_search
                 )
             )
             .addItem(

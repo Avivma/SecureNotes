@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- or Theme.AppCompat.Light.NoActionBar -->
+    </style>
+
+    <style name="Widget.MyApp.SearchView.Light" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:textSize">@dimen/search.text</item>
+        <item name="hintTextColor">@color/search_bar_hint</item>
+        <item name="android:textColor">@color/search_bar_text</item>
+        <item name="android:textColorHint">@color/search_bar_hint</item>
+    </style>
+
+    <style name="ModifyTimeBarStyle">
+        <item name="android:textSize">@dimen/modify_page.time</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
+<!--        <item name="android:textColor">@color/white</item>-->
+        <item name="android:textColor">?android:attr/textColorTertiary</item>
     </style>
 </resources>
