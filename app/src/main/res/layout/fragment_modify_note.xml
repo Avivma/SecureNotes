@@ -34,7 +34,7 @@
                 android:focusableInTouchMode="true"
                 android:layoutDirection="locale"
                 android:padding="8dp"
-                android:visibility="gone"
+                android:visibility="@{data.isSearchBarVisible ? View.VISIBLE : View.GONE, default=gone}"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible"
                 >

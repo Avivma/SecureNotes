@@ -40,20 +40,21 @@ class ModifyNoteViewModel @Inject constructor(
 
     private val viewsManager = ModifyNoteViewsManager()
 
-    lateinit var data: ViewData
+    var data: ViewData = viewsManager.getData()
 
     private var justBeenDeleted = false
     private var currentNoteId: Int = Consts.NO_ID
 
-    private lateinit var continuousUndoManager: ContinuousButtonOperationManager
-    private lateinit var continuousRedoManager: ContinuousButtonOperationManager
+    private var continuousUndoManager: ContinuousButtonOperationManager
+    private var continuousRedoManager: ContinuousButtonOperationManager
 
-    fun init(noteId: Int) {
-        this.currentNoteId = noteId
-        this.data = viewsManager.getData()
-        this.justBeenDeleted = false
+    init{
         this.continuousUndoManager = ContinuousButtonOperationManager(scope = viewModelScope, continuouslyAdditionCondition = data.canUndo)
         this.continuousRedoManager = ContinuousButtonOperationManager(scope = viewModelScope, continuouslyAdditionCondition = data.canRedo)
+    }
+
+    fun setNoteId(noteId: Int) {
+        this.currentNoteId = noteId
     }
 
     fun action(intention: ModifyNoteIntention) {
@@ -80,6 +81,8 @@ class ModifyNoteViewModel @Inject constructor(
                 ModifyNoteIntention.RedoStop -> redoStop()
                 ModifyNoteIntention.OpenMenu -> openMenu()
                 ModifyNoteIntention.RevealSearch -> revealSearch()
+                ModifyNoteIntention.HideSearch -> hideSearch()
+                ModifyNoteIntention.ClearSearch -> clearSearch()
             }
         }
     }
@@ -104,6 +107,7 @@ class ModifyNoteViewModel @Inject constructor(
                     setData(note.title, note.content, note.updatedAt, note.createdAt)
                     if (searchText.isNotEmpty()) {
                         delay(150) // I used this hack to avoid rise-condition with the search bar
+                        setSearchParams(true)
                         _state.emit(ModifyNoteState.DisplaySearchBarWithQuery(searchText))
                     }
                 } else {
@@ -210,8 +214,26 @@ class ModifyNoteViewModel @Inject constructor(
     private suspend fun openMenu() {
         _state.emit(ModifyNoteState.DisplayMenu)
     }
+
     private suspend fun revealSearch() {
+        data.isSearchBarVisible = true
         _state.emit(ModifyNoteState.DisplaySearchBar)
+    }
+    private suspend fun hideSearch() {
+        setSearchParams(false)
+        _state.emit(ModifyNoteState.HideSearchBar)
+    }
+    private suspend fun clearSearch() {
+        setSearchActive(false)
+        _state.emit(ModifyNoteState.ClearSearch)
+    }
+
+    private fun setSearchParams(value: Boolean) {
+        data.isSearchBarVisible = value
+        setSearchActive(value)
+    }
+    fun setSearchActive(active: Boolean) {
+        data.searchActive = active
     }
 
     private fun hasChangedOccurred(): Boolean = data.isSaveEnabled.value == true
@@ -238,6 +260,8 @@ class ModifyNoteViewModel @Inject constructor(
             viewsManager.set(title, content, updatedAt, createdAt)
         }
     }
+
+    fun isSearchActive(): Boolean = data.searchActive
 
     companion object {
         private const val TAG = "ModifyNoteViewModel"

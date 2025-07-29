@@ -73,6 +73,10 @@ class SearchDialogFragment : DialogFragment() {
                             viewModel.action(intention)
                         }
                 }
+
+                launch {
+                    viewModel.action(SearchDialogIntention.RefreshSearch)
+                }
             }
         }
     }

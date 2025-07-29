@@ -1,8 +1,6 @@
 package com.example.securenotes.features.modifynote.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +59,8 @@ class ModifyNoteFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentModifyNoteBinding.inflate(inflater, container, false)
-        viewModel.init(args.noteId)
+        viewModel.setNoteId(args.noteId)
+        L.i("$TAG onCreateView called, viewModel.data =\n${viewModel.data}")
         binding.data = viewModel.data
         binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
@@ -87,6 +86,7 @@ class ModifyNoteFragment : Fragment() {
         }
 
         viewModel.action(ModifyNoteIntention.FetchData(args.searchText))
+        this.arguments?.clear()
     }
 
     private fun makeBottomButtonsBarAdjustableAboveKeyboard() {
@@ -150,20 +150,18 @@ class ModifyNoteFragment : Fragment() {
             matchText ->
             binding.searchMatchCounter.text = matchText
             // Animate the navigation bar to appear when there are matches
-            val SHOW = true
+            var showSearchNavigation = true
             if (matchText.isEmpty()) {
                 searchHelper.clearSearch()
                 displayToast("No matches found")
-                binding.searchNavigationLayout.animateGoneVisible(!SHOW)
-            } else {
-                binding.searchNavigationLayout.animateGoneVisible(SHOW)
+                showSearchNavigation = false
             }
+            viewModel.setSearchActive(showSearchNavigation)
+            binding.searchNavigationLayout.animateGoneVisible(showSearchNavigation)
         }
 
         binding.cancelSearchButton.setOnClickListener {
-            if (binding.searchContainer.isVisible) {
-                binding.searchContainer.slideUp()
-            }
+            viewModel.action(ModifyNoteIntention.HideSearch)
         }
 
         binding.searchButton.setOnClickListener {
@@ -171,8 +169,7 @@ class ModifyNoteFragment : Fragment() {
         }
 
         binding.clearSearchButton.setOnClickListener {
-            binding.searchEditText.text.clear()
-            searchHelper.clearSearch()
+            viewModel.action(ModifyNoteIntention.ClearSearch)
         }
 
         binding.searchNextButton.setOnClickListener {
@@ -183,22 +180,17 @@ class ModifyNoteFragment : Fragment() {
             searchHelper.goToPreviousMatch()
         }
 
-        binding.searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val hasText = !s.isNullOrBlank()
-                binding.searchHasText = hasText
+        binding.searchEditText.textChangedListener { text ->
+            val hasText = text.isNotEmpty()
+            binding.searchHasText = hasText
 
-                binding.clearSearchButton.animateInvisibleVisible(hasText)
+            binding.clearSearchButton.animateInvisibleVisible(hasText)
 
-                if (!hasText) {
-                    searchHelper.clearSearch()
-                    binding.searchNavigationLayout.animateGoneVisible(false)
-                }
+            if (!hasText) {
+                searchHelper.clearSearch()
+                binding.searchNavigationLayout.animateGoneVisible(false)
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        }
 
 // Keyboard "Search" action:
         binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -232,6 +224,8 @@ class ModifyNoteFragment : Fragment() {
             is ModifyNoteState.NoteRemoved -> displayRemove.showNoteRemovedMessage(state.title)
             ModifyNoteState.DisplayMenu -> createMenu()
             ModifyNoteState.DisplaySearchBar -> revealSearchBar()
+            ModifyNoteState.HideSearchBar -> hideSearchBar()
+            ModifyNoteState.ClearSearch -> clearSearchBar()
             is ModifyNoteState.DisplaySearchBarWithQuery -> revealSearchBarWithQuery(state.searchText)
 
             else -> {
@@ -275,6 +269,17 @@ class ModifyNoteFragment : Fragment() {
         searchHelper.performSearch(binding.searchEditText.text.toString())
     }
 
+    private fun hideSearchBar() {
+        if (binding.searchContainer.isVisible) {
+            binding.searchContainer.slideUp()
+        }
+    }
+
+    private fun clearSearchBar() {
+        binding.searchEditText.text.clear()
+        searchHelper.clearSearch()
+    }
+
     private fun navigate(navigation: ModifyNoteState.Navigation) {
         L.i("$TAG navigate called")
         if (navigation is ModifyNoteState.Navigation.NavigateBack){
@@ -283,6 +288,13 @@ class ModifyNoteFragment : Fragment() {
         }
         else
             L.e("Unhandled navigation state: $navigation")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (viewModel.isSearchActive()) {
+            searchHelper.performSearch(binding.searchEditText.text.toString())
+        }
     }
 
     override fun onStop() {

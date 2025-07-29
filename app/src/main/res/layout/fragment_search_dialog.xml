@@ -7,9 +7,6 @@
         <variable
             name="searchText"
             type="androidx.lifecycle.MutableLiveData&lt;java.lang.String&gt;" />
-<!--        <variable-->
-<!--            name="model"-->
-<!--            type="com.example.securenotes.shared.search.ui.SearchDialogViewModel" />-->
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -55,7 +52,7 @@
                 app:layout_constraintEnd_toStartOf="@id/searchButtonContainer"
                 />
 
-            <ImageButton
+            <com.example.securenotes.shared.widgets.SaveableVisibilityImageButton
                 android:id="@+id/clearSearchButton"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -78,7 +75,7 @@
                 app:layout_constraintTop_toTopOf="@id/searchEditText"
                 app:layout_constraintBottom_toBottomOf="@id/searchEditText"
                 >
-                <ImageView
+                <com.example.securenotes.shared.widgets.SaveableVisibilityImageButton
                     android:id="@+id/searchButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

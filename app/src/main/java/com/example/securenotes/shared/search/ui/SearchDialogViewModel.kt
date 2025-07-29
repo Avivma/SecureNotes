@@ -26,6 +26,8 @@ class SearchDialogViewModel  @Inject constructor(
     var state: SharedFlow<SearchDialogState> = MutableSharedFlow()
     private var _state: MutableSharedFlow<SearchDialogState> = state as MutableSharedFlow<SearchDialogState>
 
+    private var hasSearchResult = false
+
     val searchText = object : MutableLiveData<String>("") {
         override fun setValue(value: String?) {
             super.setValue(value)
@@ -39,11 +41,13 @@ class SearchDialogViewModel  @Inject constructor(
                 is SearchDialogIntention.NoteClicked -> noteClicked(intention.note)
                 SearchDialogIntention.ClearSearch -> clearSearch()
                 SearchDialogIntention.Search -> search()
+                SearchDialogIntention.RefreshSearch -> refreshSearch()
             }
         }
     }
 
     private fun clearSearch() {
+        hasSearchResult = false
         searchText.postValue("")
     }
 
@@ -59,6 +63,7 @@ class SearchDialogViewModel  @Inject constructor(
     }
 
     private suspend fun search() {
+        hasSearchResult = false
         if (searchText.value!!.isEmpty()) {
             _state.emit(SearchDialogState.DisplayMessage.SearchEmpty)
             return
@@ -67,7 +72,14 @@ class SearchDialogViewModel  @Inject constructor(
         if (notes.isEmpty()) {
             _state.emit(SearchDialogState.DisplayMessage.NoResults)
         } else {
+            hasSearchResult = true
             _state.emit(SearchDialogState.DisplayNotes(notes))
+        }
+    }
+
+    private suspend fun refreshSearch() {
+        if (hasSearchResult) {
+            search()
         }
     }
 

@@ -17,6 +17,8 @@ sealed class ModifyNoteIntention {
     object Redo : ModifyNoteIntention()
     object RedoContinuously : ModifyNoteIntention()
     object RedoStop : ModifyNoteIntention()
-    object RevealSearch : ModifyNoteIntention()
     object OpenMenu : ModifyNoteIntention()
+    object RevealSearch : ModifyNoteIntention()
+    object HideSearch : ModifyNoteIntention()
+    object ClearSearch : ModifyNoteIntention()
 }

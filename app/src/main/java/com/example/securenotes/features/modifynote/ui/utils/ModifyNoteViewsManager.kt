@@ -32,7 +32,9 @@ class ModifyNoteViewsManager(titleOrigin: String = "", contentOrigin: String = "
         val canRedo: LiveData<Boolean>,
         val canUndo: LiveData<Boolean>,
         val modified: LiveData<String>,
-        val created: LiveData<String>
+        val created: LiveData<String>,
+        var isSearchBarVisible: Boolean = false,
+        var searchActive: Boolean = false
     )
 
     fun getData(): ViewData {

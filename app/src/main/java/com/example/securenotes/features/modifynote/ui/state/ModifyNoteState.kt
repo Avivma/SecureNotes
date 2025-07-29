@@ -9,6 +9,8 @@ sealed class ModifyNoteState {
     data class Error(val message: String) : ModifyNoteState()
     object DisplayMenu: ModifyNoteState()
     object DisplaySearchBar: ModifyNoteState()
+    object HideSearchBar: ModifyNoteState()
+    object ClearSearch: ModifyNoteState()
     data class DisplaySearchBarWithQuery(val searchText: String): ModifyNoteState()
 
     sealed class Navigation: ModifyNoteState() {
