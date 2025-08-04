@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
     kotlin("kapt")
 }
 
@@ -60,6 +61,8 @@ dependencies {
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
+
+    implementation(libs.livedata)
 
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)

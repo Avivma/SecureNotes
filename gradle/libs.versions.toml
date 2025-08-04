@@ -15,6 +15,7 @@ hilt = "2.48.1"
 hilt-androidx = "1.1.0"
 room = "2.5.2"
 crypto = "1.0.0"
+livedata = "2.9.1"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -47,7 +48,10 @@ crypto = { module = "androidx.security:security-crypto", version.ref = "crypto" 
 # there are not stable version yet. Only alpha and beta
 #crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "crypto" }
 
+# LiveData
+livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "livedata" }
+
 [bundles]
-compose = [ "compose-ui", "compose-ui-tooling-preview", "material3" ]
-test = [ "junit" ]
-android-test = [ "androidx-junit", "espresso-core" ]
+compose = ["compose-ui", "compose-ui-tooling-preview", "material3"]
+test = ["junit"]
+android-test = ["androidx-junit", "espresso-core"]
