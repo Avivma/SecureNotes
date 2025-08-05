@@ -1,0 +1,8 @@
+Important note:
+Work with JDK 17 (more advence version are making issue, at the moment. v17 is good enough).
+In Android Studio:
+  go to File -> Settings
+    search for "Build Tools -> gradle"
+      at Gradle JDK -> choose: "temurin-17"
+
+*In my pc this version are installed at: D\Apps\jdk
